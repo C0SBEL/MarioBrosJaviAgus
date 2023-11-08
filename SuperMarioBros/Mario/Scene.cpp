@@ -124,7 +124,9 @@ void Scene::update(int deltaTime)
 				//collision goomba con los otros goombas
 				for (int j = 0; j < numGoomba; ++j) {
 					if (j != i) {
-						if (!goomba[j].isDying()) 
+						if (!goomba[j].isDying()) {
+							printf("hola");
+						}
 					}
 				}
 			}
