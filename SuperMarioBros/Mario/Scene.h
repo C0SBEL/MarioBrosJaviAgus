@@ -49,6 +49,7 @@ private:
 	Text *text; //tocado
 	Banner* banner;
 	int numKoopa, numGoomba, numBloque;
+	float gameTime;
 
 };
 

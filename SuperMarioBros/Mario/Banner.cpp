@@ -16,11 +16,11 @@ void Banner::init(glm::ivec2 tileMapPos, ShaderProgram& shaderProgram)
 	banner = Sprite::createSprite(glm::ivec2(256*2, 32*2), glm::vec2(1, 1), &spritesheetBanner, &shaderProgram);
 
 	text = new Text[5];
-	text[0].init(glm::vec2(float(2 * 16), float(3 * 16)), shaderProgram, 2, "0000000"); //Puntos
-	text[1].init(glm::vec2(float(13 * 16), float(3 * 16)), shaderProgram, 2, "00"); //Monedas
-	text[2].init(glm::vec2(float(19 * 16), float(3 * 16)), shaderProgram, 2, "0"); //World
-	text[3].init(glm::vec2(float(21 * 16), float(3 * 16)), shaderProgram, 2, "0"); //Level
-	text[4].init(glm::vec2(float(26 * 16), float(3 * 16)), shaderProgram, 2, "000"); //Tiempo
+	text[0].init(glm::vec2(float(2 * 16), float(3 * 16)), shaderProgram, 2, 0, "0000000"); //Puntos
+	text[1].init(glm::vec2(float(13 * 16), float(3 * 16)), shaderProgram, 2, 0, "00"); //Monedas
+	text[2].init(glm::vec2(float(19 * 16), float(3 * 16)), shaderProgram, 2, 0, "0"); //World
+	text[3].init(glm::vec2(float(21 * 16), float(3 * 16)), shaderProgram, 2, 0, "0"); //Level
+	text[4].init(glm::vec2(float(26 * 16), float(3 * 16)), shaderProgram, 2, 0, "000"); //Tiempo
 
 	tileMapDispl = tileMapPos;
 	banner->setPosition(glm::vec2(float(tileMapDispl.x), float(tileMapDispl.y)));
@@ -45,21 +45,27 @@ void Banner::render()
 
 void Banner::setLevel(int world, int level) 
 {
-	string w = to_string(world);
-	string l = to_string(level);
-	//Hasta aquí funciona
-	text[2].setText(w);
-	text[3].setText(l);
+	text[2].setText(to_string(world));
+	text[3].setText(to_string(level));
 }
 
 void Banner::setPoints(int points) 
 {
-	text[0].setText(to_string(points));
+	if (points < 10) text[0].setText("000000" + to_string(points));
+	else if (points < 100) text[0].setText("00000" + to_string(points));
+	else if (points < 1000) text[0].setText("0000" + to_string(points));
+	else if (points < 10000) text[0].setText("000" + to_string(points));
+	else if (points < 100000) text[0].setText("00" + to_string(points));
+	else if (points < 1000000) text[0].setText("0" + to_string(points));
+	else text[0].setText(to_string(points));
 }
 
-void Banner::setTime()
+void Banner::setTime(float gameTime)
 {
-
+	int time = 400 - int(gameTime / 1000);
+	if (time < 10) text[4].setText("00" + to_string(time));
+	else if (time < 100) text[4].setText("0" + to_string(time));
+	else text[4].setText(to_string(time));
 }
 
 

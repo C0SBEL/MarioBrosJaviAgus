@@ -48,25 +48,38 @@ Scene::~Scene()
 void Scene::init()
 {
 	initShaders();
-	changeLevel("level01");
 	banner = new Banner();
 	banner->init(glm::ivec2(0, 0), texProgram);
+	changeLevel("level01");
+	banner->setLevel(1, 1);
+	banner->setPoints(100);
+	gameTime = 0;
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 	currentTime = 0.0f;
 
 	//Tocado
 	text = new Text();
-	text->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, "DEVELOPED BY");
+	text->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, 0, "DEVELOPED BY");
+	
 	//text->init(glm::vec2(float(2 * 16), float(4 * 16)), texProgram, 2, "0000000"); //Puntos
 }
 
 void Scene::update(int deltaTime)
 {
 	currentTime += deltaTime;
+	gameTime += deltaTime;
 	if (goomba != NULL) for (int i = 0; i < numGoomba; ++i) goomba[i].update(deltaTime);
 	if (koopa != NULL) for (int i = 0; i < numKoopa; ++i) koopa[i].update(deltaTime);
+	if (bloque != NULL) for (int i = 0; i < numBloque; ++i) bloque[i].update(deltaTime);
 	player->update(deltaTime, pos_camara);
 	banner->update(deltaTime, pos_camara);
+	banner->setTime(gameTime);
+
+	//FIN TIEMPO
+	/*int time = 400 - int(gameTime / 1000);
+	if (time <= 0) player->morirsalto();*/
+
+	printf("Current time: %f; Delta time: %d ", currentTime, deltaTime);
 
 	//Tocado 
 	glm::vec2 posMario1 = player->getPos();
@@ -93,8 +106,6 @@ void Scene::update(int deltaTime)
 				not_collision = false;
 			}
 			else player->setBloque("NONE", posBloque);
-
-			bloque[i].update(deltaTime);
 		}
 	}
 	
@@ -182,6 +193,8 @@ void Scene::update(int deltaTime)
 
 	if (player->isRebooted()) {
 		changeLevel("level01");
+		banner->setLevel(1, 1);
+		gameTime = 0;
 	}
 	
 
@@ -254,6 +267,7 @@ void Scene::changeLevel(string level)
 		player->setTileMap(map);
 
 		//banner->setLevel(1, 1);
+		//text->setText("ALERTEDPP PA");
 
 		vector<pair<int, int>> posGoombas = map->getPosObj("GOOMBAS");
 		numGoomba = posGoombas.size();

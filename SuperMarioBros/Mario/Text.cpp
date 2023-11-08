@@ -7,7 +7,7 @@
 
 enum Letters
 {
-	NUM_0, NUM_1, NUM_2, NUM_3, NUM_4, NUM_5, NUM_6, NUM_7, NUM_8, NUM_9, DASH, 
+	NUM_0, NUM_1, NUM_2, NUM_3, NUM_4, NUM_5, NUM_6, NUM_7, NUM_8, NUM_9, DASH,
 	A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
 	QUESTION_MARK, EXCLAMATION_MARK, TYPE_POINT, SPACE
 };
@@ -17,15 +17,28 @@ Text::~Text() {
 		delete sprite;
 }
 
-void Text::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int s, string newText)
+void Text::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int s, int color, string newText)
 {
 	posText = tileMapPos;
-	size = s;
 	sizeText = newText.size();
+	size = s;
 	shader = shaderProgram;
 	sprite = new Sprite[sizeText];
-	spritesheet.loadFromFile("images/tipografia.png", TEXTURE_PIXEL_FORMAT_RGBA);
-
+	switch (color)
+	{
+	case 1:
+		spritesheet.loadFromFile("images/tipografia_red.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		break;
+	case 2:
+		spritesheet.loadFromFile("images/tipografia_blue.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		break;
+	case 3:
+		spritesheet.loadFromFile("images/tipografia_green.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		break;
+	default:
+		spritesheet.loadFromFile("images/tipografia.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		break;
+	}
 	initSprites(size);
 	setText(newText);
 }
@@ -35,7 +48,7 @@ void Text::initSprites(int size) {
 		sprite[i] = *Sprite::createSprite(glm::ivec2(8, 8), glm::vec2(0.03125, 0.5), &spritesheet, &shader);
 		sprite[i].setNumberAnimations(41);
 
-		/*NUMEROS*/
+		/* NUMEROS */
 		sprite[i].setAnimationSpeed(NUM_0, 8);
 		sprite[i].addKeyframe(NUM_0, glm::vec2(0.5f, 0.f));
 
@@ -66,7 +79,7 @@ void Text::initSprites(int size) {
 		sprite[i].setAnimationSpeed(NUM_9, 8);
 		sprite[i].addKeyframe(NUM_9, glm::vec2(0.78125f, 0.f));
 
-		/*LETRAS*/
+		/* LETTERS AND SYMBOLS */
 		sprite[i].setAnimationSpeed(DASH, 8);
 		sprite[i].addKeyframe(DASH, glm::vec2(0.f, 0.5f));
 
@@ -148,7 +161,6 @@ void Text::initSprites(int size) {
 		sprite[i].setAnimationSpeed(Z, 8);
 		sprite[i].addKeyframe(Z, glm::vec2(0.03125f * 26, 0.5f));
 
-		/*SIMBOLOS*/
 		sprite[i].setAnimationSpeed(QUESTION_MARK, 8);
 		sprite[i].addKeyframe(QUESTION_MARK, glm::vec2(0.03125f * 27, 0.5f));
 
@@ -179,22 +191,22 @@ void Text::render()
 		sprite[i].render();
 }
 
-void Text::setPosition(const glm::vec2& pos)
-{
-	for (int i = 0; i < sizeText; ++i)
-		sprite[i].setPosition(glm::vec2(float(pos.x + posText.x + 8 * size * i), float(posText.y)));
-}
-
 void Text::setText(string newText) {
 	for (int i = 0; i < newText.size(); ++i) {
 		int character = (int)newText.at(i);
-		if (character == 33) sprite[i].changeAnimation(EXCLAMATION_MARK); //Imprime '!'
-		else if (character == 63) sprite[i].changeAnimation(QUESTION_MARK); //Imprime '?'
-		else if (character == 45) sprite[i].changeAnimation(DASH); //Imprime '-'
-		else if (character == 46) sprite[i].changeAnimation(TYPE_POINT); //Imprime '.'
-		else if (character >= 48 && character <= 57) sprite[i].changeAnimation(character - 48); //Imprime digitos del '0' al '9'
-		else if (character >= 64 && character <= 90) sprite[i].changeAnimation(character - 54); //Imprime letras de la 'A' a la 'Z'
-		else sprite[i].changeAnimation(SPACE); //Imprime ' ' (espacio en blanco)
+		if (character == 33) sprite[i].changeAnimation(EXCLAMATION_MARK);
+		else if (character == 63) sprite[i].changeAnimation(QUESTION_MARK);
+		else if (character == 45) sprite[i].changeAnimation(DASH);
+		else if (character == 46) sprite[i].changeAnimation(TYPE_POINT);
+		else if (character >= 48 && character <= 57) sprite[i].changeAnimation(character - 48);
+		else if (character >= 64 && character <= 90) sprite[i].changeAnimation(character - 54);
+		else sprite[i].changeAnimation(SPACE);
 	}
+}
+
+void Text::setPosition(const glm::vec2 & pos)
+{
+	for (int i = 0; i < sizeText; ++i)
+		sprite[i].setPosition(glm::vec2(float(pos.x + posText.x + 8 * size * i), float(posText.y)));
 }
 
