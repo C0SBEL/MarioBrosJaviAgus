@@ -111,13 +111,21 @@ void Scene::update(int deltaTime)
 		{
 			glm::vec2 posGoomba = goomba[i].getPos();
 			glm::vec2 tamG = goomba[i].getTam();
-			if (!goomba[i].isDying() && collisionPlayerEnemy(posMario, tamM, posGoomba, tamG)) {
-				if (posMario.y < posGoomba.y) {
-					goomba[i].morint();
-					player->jump();
+			if (!goomba[i].isDying()) {
+				if (collisionPlayerEnemy(posMario, tamM, posGoomba, tamG)) {
+					if (posMario.y < posGoomba.y) {
+						goomba[i].morint();
+						player->jump();
+					}
+					else {
+						player->morirsalto();
+					}
 				}
-				else {
-					player->morirsalto();
+				//collision goomba con los otros goombas
+				for (int j = 0; j < numGoomba; ++j) {
+					if (j != i) {
+						if (!goomba[j].isDying()) 
+					}
 				}
 			}
 		}

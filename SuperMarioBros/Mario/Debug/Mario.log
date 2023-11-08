@@ -1,31 +1,3 @@
-﻿  Banner.cpp
-  Bloque.cpp
-  Game.cpp
-  Goomba.cpp
-  Koopa.cpp
-  main.cpp
-  Objeto.cpp
-  Player.cpp
-C:\Users\Bugsys\Desktop\MarioBrosJaviAgus\SuperMarioBros\Mario\Player.cpp(7,10): warning C4067: símbolos (token) inesperados después de la directiva del preprocesador; se esperaba una nueva línea
-C:\Users\Bugsys\Desktop\MarioBrosJaviAgus\SuperMarioBros\Mario\Player.cpp(389,11): warning C4244: 'inicializando': conversión de 'T' a 'int'; posible pérdida de datos
-          with
-          [
-              T=float
-          ]
-  Scene.cpp
+﻿  Scene.cpp
 C:\Users\Bugsys\Desktop\MarioBrosJaviAgus\SuperMarioBros\Mario\Scene.cpp(69,28): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-  Shader.cpp
-  ShaderProgram.cpp
-  Sprite.cpp
-  Text.cpp
-C:\Users\Bugsys\Desktop\MarioBrosJaviAgus\SuperMarioBros\Mario\Text.cpp(189,20): warning C4018: '<': no coinciden signed/unsigned
-  Texture.cpp
-  TileMap.cpp
-  Generando código...
-C:\Users\Bugsys\Desktop\MarioBrosJaviAgus\SuperMarioBros\Mario\TileMap.cpp(350): warning C4715: 'TileMap::getPosObj': no todas las rutas de acceso de control devuelven un valor
-C:\Users\Bugsys\Desktop\MarioBrosJaviAgus\SuperMarioBros\Mario\Player.cpp(376): warning C4715: 'Player::getEstado': no todas las rutas de acceso de control devuelven un valor
-SOIL.lib(image_DXT.obj) : warning LNK4099: no se encontró PDB 'vc100.pdb' con 'SOIL.lib(image_DXT.obj)' o en 'C:\Users\Bugsys\Desktop\MarioBrosJaviAgus\SuperMarioBros\Mario\Debug\vc100.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-SOIL.lib(image_helper.obj) : warning LNK4099: no se encontró PDB 'vc100.pdb' con 'SOIL.lib(image_helper.obj)' o en 'C:\Users\Bugsys\Desktop\MarioBrosJaviAgus\SuperMarioBros\Mario\Debug\vc100.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-SOIL.lib(SOIL.obj) : warning LNK4099: no se encontró PDB 'vc100.pdb' con 'SOIL.lib(SOIL.obj)' o en 'C:\Users\Bugsys\Desktop\MarioBrosJaviAgus\SuperMarioBros\Mario\Debug\vc100.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-SOIL.lib(stb_image_aug.obj) : warning LNK4099: no se encontró PDB 'vc100.pdb' con 'SOIL.lib(stb_image_aug.obj)' o en 'C:\Users\Bugsys\Desktop\MarioBrosJaviAgus\SuperMarioBros\Mario\Debug\vc100.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-  Mario.vcxproj -> C:\Users\Bugsys\Desktop\MarioBrosJaviAgus\SuperMarioBros\Mario\Debug\Mario.exe
+C:\Users\Bugsys\Desktop\MarioBrosJaviAgus\SuperMarioBros\Mario\Scene.cpp(128,6): error C2059: error de sintaxis: '}'
