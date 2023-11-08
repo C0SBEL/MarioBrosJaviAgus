@@ -17,7 +17,7 @@ public:
 	void render();
 	void setLevel(int world, int level);
 	void setPoints(int points);
-	void setTime();
+	void setTime(float gameTime);
 
 private:
 	glm::ivec2 tileMapDispl;
