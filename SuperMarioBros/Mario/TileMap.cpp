@@ -255,7 +255,6 @@ bool TileMap::cargarElementos(const string& objectFile) {
 		pair<int, int> aux;
 		sstream >> aux.first >> aux.second;
 		posGoombas[i] = aux;
-		printf("posGoomba = %d, %d ", posGoombas[i].first, posGoombas[i].second);
 	}
 
 	sstream.clear(); 
@@ -269,7 +268,6 @@ bool TileMap::cargarElementos(const string& objectFile) {
 	sstream.str(line);
 	int numK;
 	sstream >> numK;
-	printf("Numero koopas: %d ", numK);
 	posKoopas = vector<pair<int, int>>(numK);
 
 	sstream.clear();  
@@ -281,7 +279,6 @@ bool TileMap::cargarElementos(const string& objectFile) {
 		pair<int, int> aux;
 		sstream >> aux.first >> aux.second;
 		posKoopas[i] = aux;
-		printf("posKoopa = %d, %d ", posKoopas[i].first, posKoopas[i].second);
 	}
 
 	sstream.clear();  
@@ -295,7 +292,6 @@ bool TileMap::cargarElementos(const string& objectFile) {
 	sstream.str(line);
 	int numI;
 	sstream >> numI;
-	printf("Numero interrogantes: %d ", numI);
 	posInterrogantes = vector<pair<int, int>>(numI);
 
 	sstream.clear();
@@ -307,7 +303,6 @@ bool TileMap::cargarElementos(const string& objectFile) {
 		pair<int, int> aux;
 		sstream >> aux.first >> aux.second;
 		posInterrogantes[i] = aux;
-		printf("posInterrogantes = %d, %d ", posInterrogantes[i].first, posInterrogantes[i].second);
 	}
 
 	sstream.clear();
@@ -321,7 +316,6 @@ bool TileMap::cargarElementos(const string& objectFile) {
 	sstream.str(line);
 	int numL;
 	sstream >> numL;
-	printf("Numero interrogantes: %d ", numL);
 	posLadrillos = vector<pair<int, int>>(numL);
 
 	sstream.clear();
@@ -333,7 +327,6 @@ bool TileMap::cargarElementos(const string& objectFile) {
 		pair<int, int> aux;
 		sstream >> aux.first >> aux.second;
 		posLadrillos[i] = aux;
-		printf("posLadrillos = %d, %d ", posLadrillos[i].first, posLadrillos[i].second);
 	}
 
 	fin.close();

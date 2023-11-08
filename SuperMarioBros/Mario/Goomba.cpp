@@ -40,6 +40,7 @@ void Goomba::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	jumpdie = false;
 	ini = 2;
 	time = 0;
+	jumpAngle = 0;
 }
 
 void Goomba::update(int deltaTime)
@@ -72,10 +73,12 @@ void Goomba::update(int deltaTime)
 			if (jumpdie) {
 				++time;
 				jumpDie();
-				sprite->update(deltaTime);
 				sprite->setPosition(glm::vec2(float(tileMapDispl.x + posGoomba.x), float(tileMapDispl.y + posGoomba.y)));
+				sprite->update(deltaTime);
 				if (time == 60) {
+					printf("se deja de ver goomba");
 					active = false;
+					jumpdie = false;
 					time = 0;
 				}
 			}
@@ -124,7 +127,6 @@ void Goomba::morint() {
 
 void Goomba::changeDirection() {
 	moveGoomba = !moveGoomba;
-	printf(" cambio dirección goomba ");
 }
 
 
@@ -141,7 +143,6 @@ void Goomba::morintkoopa() {
 void Goomba::jumpDie() {
 	if (jumpdie) {
 		jumpAngle += JUMP_ANGLE_STEP;
-
 	    posGoomba.y = int(startY - JUMP_HEIGHT * sin(3.14159f * jumpAngle / 180.f));
 	}
 	else posGoomba.y += FALL_STEP;

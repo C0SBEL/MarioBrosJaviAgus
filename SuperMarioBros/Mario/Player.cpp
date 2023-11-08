@@ -27,6 +27,9 @@ enum CambioEstadoAnims
 
 void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 {
+	jump_angle_step = 4;
+	jump_height = 128;
+	fall_step = 4;
 	bJumping = false;
 	dying = false;
 	vel = 5;
@@ -171,13 +174,8 @@ void Player::update(int deltaTime, float poscam)
 {
 	if (active) {
 		sprite->update(deltaTime);
-		printf("Pos Player y: %d \n", posPlayer.y);
+		//printf("Pos Player y: %d \n", posPlayer.y);
 		//se va del mapa
-		if (posPlayer.y > 14 * tamPlayer.x) {
-			posPlayer.y = 14 * tamPlayer.x;
-			dying = true;
-			sprite->changeAnimation(DEAD);
-		}
 
 		//Animación aterrizaje salto (JUMP_X --> STAND_X)
 		if (!bJumping && sprite->animation() == JUMP_LEFT) sprite->changeAnimation(STAND_LEFT);
@@ -203,6 +201,13 @@ void Player::update(int deltaTime, float poscam)
 		else vel = 2;
 
 		if (!dying) {
+
+			if (posPlayer.y > 14 * tamPlayer.x) {
+				posPlayer.y = 14 * tamPlayer.x;
+				dying = true;
+				sprite->changeAnimation(DEAD);
+			}
+
 			if (Game::instance().getSpecialKey(GLUT_KEY_LEFT))
 			{
 				if (bJumping) sprite->changeAnimation(JUMP_LEFT);
@@ -266,7 +271,7 @@ void Player::update(int deltaTime, float poscam)
 				sprite->changeAnimation(DEAD);
 			}
 
-			jumpAngle += JUMP_ANGLE_STEP;
+			jumpAngle += jump_angle_step;
 			if (jumpAngle == 180)
 			{
 				bJumping = false;
@@ -274,8 +279,8 @@ void Player::update(int deltaTime, float poscam)
 			}
 			else
 			{
-				posPlayer.y = int(startY - JUMP_HEIGHT * sin(3.14159f * jumpAngle / 180.f));
-				if (jumpAngle > 90) {
+				posPlayer.y = int(startY - jump_height * sin(3.14159f * jumpAngle / 180.f));
+				if (!dying && jumpAngle > 90) {
 					bJumping = !map->collisionMoveDown(posPlayer, tamPlayer, &posPlayer.y);
 					if (hitBloque == "DOWN")
 					{
@@ -293,8 +298,8 @@ void Player::update(int deltaTime, float poscam)
 		}
 		else
 		{
-			posPlayer.y += FALL_STEP;
-			if (map->collisionMoveDown(posPlayer, tamPlayer, &posPlayer.y) || hitBloque == "DOWN")
+			posPlayer.y += fall_step;
+			if (!dying && map->collisionMoveDown(posPlayer, tamPlayer, &posPlayer.y) || hitBloque == "DOWN")
 			{
 				//Activa el salto
 				if (Game::instance().getSpecialKey(GLUT_KEY_UP))
@@ -308,7 +313,7 @@ void Player::update(int deltaTime, float poscam)
 
 		if (dying) {
 			time++;
-			if (time == 40) {
+			if (time == 100) {
 				rebooted = true;
 			}
 
@@ -398,6 +403,8 @@ void Player::jump() {
 }
 
 void Player::morirsalto() {
+	fall_step = 6;
+	jump_height = 50;
 	dying = true;
 	jump();
 	sprite->changeAnimation(DEAD);

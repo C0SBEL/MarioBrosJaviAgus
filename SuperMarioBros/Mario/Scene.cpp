@@ -125,9 +125,28 @@ void Scene::update(int deltaTime)
 				for (int j = 0; j < numGoomba; ++j) {
 					if (j != i) {
 						if (!goomba[j].isDying()) {
+							glm::vec2 posGoomba2 = goomba[j].getPos();
+							if (collisionPlayerEnemy(posGoomba, tamG, posGoomba2, tamG)) {
+								goomba[j].changeDirection();
+							}
 						}
 					}
 				}
+				for (int j = 0; j < numKoopa; ++j) {
+					glm::vec2 posKoopa = koopa[j].getPos();
+					glm::vec2 tamK = koopa[j].getTam();
+					if (collisionPlayerEnemy(posGoomba, tamG, posKoopa, tamK)) {
+							if (!koopa[j].isShell()) {
+								goomba[i].changeDirection();
+								koopa[j].changeDirection();
+							}
+							else if (!goomba[i].isDying()){
+								goomba[i].morintkoopa();
+
+							}
+					}
+				}
+				//collision goomba con los otros koopas
 			}
 		}
 	}
@@ -151,7 +170,11 @@ void Scene::update(int deltaTime)
 					}
 				}
 				else {
-					player->morirsalto();
+					if (koopa[i].isShell() && !koopa[i].ismoveShell()) {
+						bool left = posKoopa.x < posMario.x;
+						koopa[i].moveShell(left);
+					}
+					else player->morirsalto();
 				}
 			}
 		}

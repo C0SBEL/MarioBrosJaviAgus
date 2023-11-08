@@ -26,6 +26,7 @@ public:
 	glm::vec2 getTam() const;
 	bool isShell();
 	void moveShell(bool left);
+	bool ismoveShell();
 
 private:
 	bool moveKoopa, moveshell = false, left;

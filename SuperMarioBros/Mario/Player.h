@@ -37,7 +37,7 @@ public:
 private:
 	bool bJumping, cambioEstado, dying, active, rebooted;
 	glm::ivec2 tileMapDispl, posPlayer, tamPlayer, posBloque;
-	int jumpAngle, startY, vel;
+	int jumpAngle, startY, vel, jump_angle_step, jump_height, fall_step;
 	Texture spritesheetMario, spritesheetSuperMario, spritesheetCambioEstado;
 	Sprite *sprite, *mario, *supermario, *cambioestado;
 	TileMap *map;

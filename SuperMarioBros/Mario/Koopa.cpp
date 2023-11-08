@@ -58,7 +58,7 @@ void Koopa::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 void Koopa::update(int deltaTime)
 {
 	sprite->update(deltaTime);
-	printf("Pos Koopa y: %d \n", posKoopa.y);
+	//printf("Pos Koopa y: %d \n", posKoopa.y);
 	if (sprite == spritekoopa){
 		if (sprite->animation() == MOVE_LEFT){
 			posKoopa.x -= vel;
@@ -140,4 +140,8 @@ void Koopa::moveShell(bool left) {
 
 bool Koopa::isShell() {
 	return sprite == spriteshell;
+}
+
+bool Koopa::ismoveShell() {
+	return moveshell;
 }
