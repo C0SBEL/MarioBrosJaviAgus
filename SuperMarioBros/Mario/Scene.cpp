@@ -147,6 +147,10 @@ void Scene::update(int deltaTime)
 			}
 		}
 	}
+
+	if (player->isRebooted()) {
+		changeLevel("level01");
+	}
 	
 
 	
@@ -207,6 +211,7 @@ void Scene::changeLevel(string level)
 	numKoopa = 0;
 	numGoomba = 0;
 	numBloque = 0;
+	printf("changelevel");
 
 	//Cambio de nivel
 	if (level == "level01") {
