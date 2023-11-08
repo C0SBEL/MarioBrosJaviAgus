@@ -125,7 +125,6 @@ void Scene::update(int deltaTime)
 				for (int j = 0; j < numGoomba; ++j) {
 					if (j != i) {
 						if (!goomba[j].isDying()) {
-							printf("hola");
 						}
 					}
 				}
