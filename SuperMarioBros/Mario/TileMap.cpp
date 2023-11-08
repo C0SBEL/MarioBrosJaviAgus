@@ -329,6 +329,30 @@ bool TileMap::cargarElementos(const string& objectFile) {
 		posLadrillos[i] = aux;
 	}
 
+	sstream.clear();
+	sstream.seekg(0);
+
+	//Posiciones Monedas
+	getline(fin, line);
+	if (line.compare(0, 8, "MONEDA") != 0)
+		return false;
+	getline(fin, line);
+	sstream.str(line);
+	int numM;
+	sstream >> numM;
+	posMonedas = vector<pair<int, int>>(numM);
+
+	sstream.clear();
+	sstream.seekg(0);
+
+	getline(fin, line);
+	sstream.str(line);
+	for (int i = 0; i < numM; ++i) {
+		pair<int, int> aux;
+		sstream >> aux.first >> aux.second;
+		posMonedas[i] = aux;
+	}
+
 	fin.close();
 
 	return true;
@@ -340,4 +364,5 @@ vector<pair<int, int>> TileMap::getPosObj(string n)
 	else if (n == "KOOPAS") return posKoopas;
 	else if (n == "INTERROGANTES") return posInterrogantes;
 	else if (n == "LADRILLOS") return posLadrillos;
+	else if (n == "MONEDAS") return posMonedas;
 }
