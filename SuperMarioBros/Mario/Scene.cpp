@@ -143,11 +143,12 @@ void Scene::update(int deltaTime)
 					moneda[i].setHit();
 					numMonedasMario += 1;
 					puntosMario += 200;
-					if (numMonedasMario > 100)
+					if (numMonedasMario > 100 && numVidasMario < 100)
 					{
 						numMonedasMario = 0;
 						numVidasMario += 1;
 					}
+					else if (numMonedasMario > 100) numMonedasMario = 99;
 				}
 			}
 		}
@@ -168,6 +169,7 @@ void Scene::update(int deltaTime)
 					}
 					else {
 						player->morirsalto();
+						numVidasMario -= 1;
 					}
 				}
 				//collision goomba con los otros goombas
@@ -224,7 +226,11 @@ void Scene::update(int deltaTime)
 						bool left = posKoopa.x < posMario.x;
 						koopa[i].moveShell(left);
 					}
-					else player->morirsalto();
+					else
+					{
+						player->morirsalto();
+						numVidasMario -= 1;
+					}
 				}
 			}
 			//collision koopa koopa
@@ -253,7 +259,9 @@ void Scene::update(int deltaTime)
 			changeLevel("mundo");
 			//changeLevel("level01");
 			banner->setLevel(1, 1);
-			banner->setTime(404.f);
+			banner->setTime(-1.f);
+			pantallaMundo->setLevel(1, 1);
+			pantallaMundo->setVides(numVidasMario);
 			gameTime = 0;
 		}
 		else {
@@ -297,7 +305,7 @@ void Scene::update(int deltaTime)
 	//SCROLL
 	float cuadrant = posMario.x - pos_camara;
 	if (cuadrant >= SCREEN_WIDTH / 3) {
-		pos_camara += player->getVel();
+		if (player != NULL) pos_camara += player->getVel();
 		projection = glm::ortho(pos_camara, float(SCREEN_WIDTH) + pos_camara, float(SCREEN_HEIGHT), 0.f);
 	}
 }
@@ -346,6 +354,7 @@ void Scene::changeLevel(string level)
 		pantallaMundo->init(glm::ivec2(0, 0), texProgram);
 	}
 	else if (level == "level01") {
+		//pos_camara = 0;
 		map = TileMap::createTileMap("levels/level01.txt", "levels/objects01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 		player = new Player();
 		player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
@@ -426,9 +435,9 @@ void Scene::changeLevel(string level)
 				moneda[i].setTileMap(map);
 			}
 		}
-
-		pos_camara = 0;
+		//pos_camara = 0;
 	}
+	pos_camara = 0;
 }
 
 

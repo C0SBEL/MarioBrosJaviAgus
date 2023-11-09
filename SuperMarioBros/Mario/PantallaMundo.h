@@ -16,8 +16,7 @@ public:
 	void update(int deltaTime, int pos_camara);
 	void render();
 	void setLevel(int world, int level);
-	void setPoints(int points);
-	void setTime(float gameTime);
+	void setVides(int vides);
 
 private:
 	glm::ivec2 tileMapDispl;
