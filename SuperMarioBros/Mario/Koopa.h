@@ -27,16 +27,20 @@ public:
 	bool isShell();
 	void moveShell(bool left);
 	bool ismoveShell();
+	void jumpDie();
+	void morintKoopa();
+	bool isDying();
 
 private:
-	bool moveKoopa, moveshell = false, left;
+	bool moveKoopa, moveshell, left, dying, active;
 	glm::ivec2 tileMapDispl, posKoopa;
 	glm::vec2 tamKoopa;
 	int jumpAngle, startY;
 	Texture spritesheet, spritesheetshell;
 	Sprite* sprite, *spritekoopa, *spriteshell;
 	TileMap* map;
-	int vel;
+	int time, accelerador;
+	float vel;
 
 };
 

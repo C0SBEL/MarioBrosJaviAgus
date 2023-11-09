@@ -189,7 +189,6 @@ void Scene::update(int deltaTime)
 							if (!koopa[j].isShell()) {
 								goomba[i].changeDirection();
 								koopa[j].changeDirection();
-								printf("cambiodireccion koopa goomba");
 							}
 							else if (koopa[j].isShell() && !koopa[j].ismoveShell()) {
 								goomba[i].changeDirection();
@@ -197,7 +196,6 @@ void Scene::update(int deltaTime)
 							else goomba[i].morintkoopa();
 					}
 				}
-				//collision goomba con los otros koopas
 			}
 		}
 	}
@@ -207,51 +205,62 @@ void Scene::update(int deltaTime)
 	{
 		for (int i = 0; i < numKoopa; ++i)
 		{
-			glm::vec2 posKoopa = koopa[i].getPos();
-			glm::vec2 tamK = koopa[i].getTam();
-			if (!player->isDying() && collisionPlayerEnemy(posMario, tamM, posKoopa, tamK)) {
-				if (posMario.y + tamM.y / 2 <= posKoopa.y) {
-					player->jump();
-					if (koopa[i].isShell()) {
-						bool left = posKoopa.x < posMario.x;
-						koopa[i].moveShell(left);
+			if (!koopa[i].isDying()) {
+				glm::vec2 posKoopa = koopa[i].getPos();
+				glm::vec2 tamK = koopa[i].getTam();
+				if (!player->isDying() && collisionPlayerEnemy(posMario, tamM, posKoopa, tamK)) {
+					if (posMario.y + tamM.y / 2 <= posKoopa.y) {
+						player->jump();
+						if (koopa[i].isShell()) {
+							bool left = posKoopa.x < posMario.x;
+							koopa[i].moveShell(left);
+						}
+						else {
+							koopa[i].transformToShell();
+						}
 					}
 					else {
-						koopa[i].transformToShell();
+						if (koopa[i].isShell() && !koopa[i].ismoveShell()) {
+							printf("caparazon se MUEVEEEEE");
+							bool left = posKoopa.x < posMario.x;
+							koopa[i].moveShell(left);
+						}
+						else
+						{
+							printf("caparazon se MUEVEEEEE");
+							player->morirsalto();
+							numVidasMario -= 1;
+						}
 					}
 				}
-				else {
-					if (koopa[i].isShell() && !koopa[i].ismoveShell()) {
-						bool left = posKoopa.x < posMario.x;
-						koopa[i].moveShell(left);
-					}
-					else
-					{
-						player->morirsalto();
-						numVidasMario -= 1;
-					}
-				}
-			}
-			//collision koopa koopa
-			for (int j = 0; j < numKoopa; ++j) {
-				if (i != j) {
-					glm::vec2 posKoopa2 = koopa[j].getPos();
-					glm::vec2 tamK2 = koopa[j].getTam();
-					if (collisionPlayerEnemy(posKoopa, tamK, posKoopa2, tamK2)) {
-						if (!koopa[j].isShell() && !koopa[i].isShell()) {
-							koopa[j].changeDirection();
-						}
-						else if (koopa[j].isShell() && !koopa[j].ismoveShell() && !koopa[i].isShell()) {
-							koopa[i].changeDirection();
-						}
-						else if (koopa[i].ismoveShell() && !koopa[j].isShell()) {
-							koopa[j].transformToShell();
+				//collision koopa koopa
+				for (int j = 0; j < numKoopa; ++j) {
+					if (i != j) {
+						glm::vec2 posKoopa2 = koopa[j].getPos();
+						glm::vec2 tamK2 = koopa[j].getTam();
+						if (collisionPlayerEnemy(posKoopa, tamK, posKoopa2, tamK2)) {
+							if (!koopa[j].isShell() && !koopa[i].isShell()) {
+								koopa[i].changeDirection();
+							}
+							else if (koopa[j].isShell() && !koopa[j].ismoveShell() && !koopa[i].isShell()) {
+								koopa[i].changeDirection();
+							}
+							else if (koopa[j].ismoveShell() && !koopa[i].isShell()) {
+								koopa[i].transformToShell();
+								koopa[i].morintKoopa();
+								printf("morintkoopa");
+							}
+							else if (koopa[j].ismoveShell() && koopa[i].isShell() && !koopa[i].ismoveShell()) {
+								koopa[i].morintKoopa();
+								printf("morintkoopa");
+							}
 						}
 					}
 				}
 			}
 		}
 	}
+
 
 	//PLAYER
 	if (player != NULL) {
@@ -313,7 +322,7 @@ void Scene::update(int deltaTime)
 	//collision koopas
 
 	//FIN TIEMPO
-	int time = 10 - int(gameTime / 1000);
+	int time = 400 - int(gameTime / 1000);
 	if (time <= 0 && !player->isDying()) {
 		player->morirsalto();
 		numVidasMario -= 1;

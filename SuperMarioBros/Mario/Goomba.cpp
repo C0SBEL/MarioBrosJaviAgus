@@ -44,6 +44,7 @@ void Goomba::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	ini = 2;
 	time = 0;
 	jumpAngle = 0;
+	accelerador = 1;
 }
 
 void Goomba::update(int deltaTime)
@@ -59,6 +60,7 @@ void Goomba::update(int deltaTime)
 					{
 						moveGoomba = false;
 					}
+					//if (!map->collisionMoveDown(posGoomba, tamGoomba, &posGoomba.y)) posGoomba.y += FALL_STEP;
 				}
 				else
 				{

@@ -302,7 +302,7 @@ void Player::update(int deltaTime, float poscam)
 			if (!dying && map->collisionMoveDown(posPlayer, tamPlayer, &posPlayer.y) || hitBloque == "DOWN")
 			{
 				//Activa el salto
-				if (Game::instance().getSpecialKey(GLUT_KEY_UP))
+				if (Game::instance().getKey(' '))
 				{
 					bJumping = true;
 					jumpAngle = 0;

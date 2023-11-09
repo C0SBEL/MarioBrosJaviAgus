@@ -33,7 +33,7 @@ public:
 
 
 private:
-	int accelerador = 1;
+	int accelerador;
 	bool moveGoomba, active, dying, dead, jumpdie;
 	glm::ivec2 tileMapDispl, posGoomba, tamGoomba;
 	int jumpAngle, startY;
