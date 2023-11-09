@@ -6,28 +6,31 @@
 #include "Game.h"
 
 
-#define JUMP_ANGLE_STEP 4
-#define JUMP_HEIGHT 128
-#define FALL_STEP 8
+#define JUMP_ANGLE_STEP 20
+#define JUMP_HEIGHT 20
+#define FALL_STEP 2
 
 
 enum GoombaAnims
 {
-	MOVE, DEAD
+	MOVE, DEAD, DOWN
 };
 
 void Goomba::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 {
 	spritesheet.loadFromFile("images/Goomba2.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.5, 0.5), &spritesheet, &shaderProgram);
-	sprite->setNumberAnimations(2);
+	sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.25, 0.5), &spritesheet, &shaderProgram);
+	sprite->setNumberAnimations(3);
 
 	sprite->setAnimationSpeed(MOVE, 8);
 	sprite->addKeyframe(MOVE, glm::vec2(0.f, 0.f));
-	sprite->addKeyframe(MOVE, glm::vec2(0.5f, 0.f));
+	sprite->addKeyframe(MOVE, glm::vec2(0.25f, 0.f));
 
 	sprite->setAnimationSpeed(DEAD, 8);
 	sprite->addKeyframe(DEAD, glm::vec2(0.f, 0.5f));
+
+	sprite->setAnimationSpeed(DOWN, 8);
+	sprite->addKeyframe(DOWN, glm::vec2(0.25f, 0.5f));
 
 	sprite->changeAnimation(MOVE);
 	moveGoomba = true;
@@ -135,6 +138,7 @@ bool Goomba::isDying() {
 }
 
 void Goomba::morintkoopa() {
+	sprite->changeAnimation(DOWN);
 	dying = true;
 	jumpdie = true;
 	startY = posGoomba.y;
@@ -142,8 +146,13 @@ void Goomba::morintkoopa() {
 
 void Goomba::jumpDie() {
 	if (jumpdie) {
-		jumpAngle += JUMP_ANGLE_STEP;
-	    posGoomba.y = int(startY - JUMP_HEIGHT * sin(3.14159f * jumpAngle / 180.f));
+		if (jumpAngle < 90) {
+			jumpAngle += JUMP_ANGLE_STEP;
+			posGoomba.y = int(startY - JUMP_HEIGHT * sin(3.14159f * jumpAngle / 180.f));
+		}
+		else {
+			++accelerador;
+			posGoomba.y += FALL_STEP + accelerador;
+		}
 	}
-	else posGoomba.y += FALL_STEP;
 }

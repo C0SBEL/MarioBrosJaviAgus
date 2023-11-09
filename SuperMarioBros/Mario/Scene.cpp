@@ -79,7 +79,6 @@ void Scene::update(int deltaTime)
 	/*int time = 400 - int(gameTime / 1000);
 	if (time <= 0) player->morirsalto();*/
 
-	printf("Current time: %f; Delta time: %d ", currentTime, deltaTime);
 
 	//Tocado 
 	glm::vec2 posMario1 = player->getPos();
@@ -120,10 +119,10 @@ void Scene::update(int deltaTime)
 	{
 		for (int i = 0; i < numGoomba; ++i)
 		{
-			glm::vec2 posGoomba = goomba[i].getPos();
-			glm::vec2 tamG = goomba[i].getTam();
 			if (!goomba[i].isDying()) {
-				if (collisionPlayerEnemy(posMario, tamM, posGoomba, tamG)) {
+				glm::vec2 posGoomba = goomba[i].getPos();
+				glm::vec2 tamG = goomba[i].getTam();
+				if (!player->isDying() && collisionPlayerEnemy(posMario, tamM, posGoomba, tamG)) {
 					if (posMario.y < posGoomba.y) {
 						goomba[i].morint();
 						player->jump();
@@ -150,11 +149,12 @@ void Scene::update(int deltaTime)
 							if (!koopa[j].isShell()) {
 								goomba[i].changeDirection();
 								koopa[j].changeDirection();
+								printf("cambiodireccion koopa goomba");
 							}
-							else if (!goomba[i].isDying()){
-								goomba[i].morintkoopa();
-
+							else if (koopa[j].isShell() && !koopa[j].ismoveShell()) {
+								goomba[i].changeDirection();
 							}
+							else goomba[i].morintkoopa();
 					}
 				}
 				//collision goomba con los otros koopas
@@ -169,7 +169,7 @@ void Scene::update(int deltaTime)
 		{
 			glm::vec2 posKoopa = koopa[i].getPos();
 			glm::vec2 tamK = koopa[i].getTam();
-			if (collisionPlayerEnemy(posMario, tamM, posKoopa, tamK)) {
+			if (!player->isDying() && collisionPlayerEnemy(posMario, tamM, posKoopa, tamK)) {
 				if (posMario.y + tamM.y / 2 <= posKoopa.y) {
 					player->jump();
 					if (koopa[i].isShell()) {
@@ -186,6 +186,24 @@ void Scene::update(int deltaTime)
 						koopa[i].moveShell(left);
 					}
 					else player->morirsalto();
+				}
+			}
+			//collision koopa koopa
+			for (int j = 0; j < numKoopa; ++j) {
+				if (i != j) {
+					glm::vec2 posKoopa2 = koopa[j].getPos();
+					glm::vec2 tamK2 = koopa[j].getTam();
+					if (collisionPlayerEnemy(posKoopa, tamK, posKoopa2, tamK2)) {
+						if (!koopa[j].isShell() && !koopa[i].isShell()) {
+							koopa[j].changeDirection();
+						}
+						else if (koopa[j].isShell() && !koopa[j].ismoveShell() && !koopa[i].isShell()) {
+							koopa[i].changeDirection();
+						}
+						else if (koopa[i].ismoveShell() && !koopa[j].isShell()) {
+							koopa[j].transformToShell();
+						}
+					}
 				}
 			}
 		}

@@ -66,7 +66,7 @@ void Koopa::update(int deltaTime)
 		}
 		else if (sprite->animation() == MOVE_RIGHT){
 			posKoopa.x += vel;
-			if (map->collisionMoveRight(posKoopa, tamKoopa) || posKoopa.x >= 240 ) sprite->changeAnimation(MOVE_LEFT);
+			if (map->collisionMoveRight(posKoopa, tamKoopa) || posKoopa.x >= 240 *32 ) sprite->changeAnimation(MOVE_LEFT);
 		}
 	}
 
