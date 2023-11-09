@@ -43,13 +43,7 @@ void Banner::render()
 	for (int i = 0; i < 5; ++i) text[i].render();
 }
 
-void Banner::setLevel(int world, int level) 
-{
-	text[2].setText(to_string(world));
-	text[3].setText(to_string(level));
-}
-
-void Banner::setPoints(int points) 
+void Banner::setPoints(int points)
 {
 	if (points < 10) text[0].setText("000000" + to_string(points));
 	else if (points < 100) text[0].setText("00000" + to_string(points));
@@ -58,6 +52,18 @@ void Banner::setPoints(int points)
 	else if (points < 100000) text[0].setText("00" + to_string(points));
 	else if (points < 1000000) text[0].setText("0" + to_string(points));
 	else text[0].setText(to_string(points));
+}
+
+void Banner::setMonedas(int monedas)
+{
+	if (monedas < 10) text[1].setText("0" + to_string(monedas));
+	else text[1].setText(to_string(monedas));
+}
+
+void Banner::setLevel(int world, int level) 
+{
+	text[2].setText(to_string(world));
+	text[3].setText(to_string(level));
 }
 
 void Banner::setTime(float gameTime)

@@ -26,6 +26,7 @@ Scene::Scene()
 	koopa = NULL;
 	bloque = NULL;
 	banner = NULL;
+	moneda = NULL;
 }
 
 Scene::~Scene()
@@ -42,6 +43,8 @@ Scene::~Scene()
 		delete bloque;
 	if (banner != NULL)
 		delete banner;
+	if (moneda != NULL)
+		delete moneda;
 }
 
 
@@ -50,16 +53,21 @@ void Scene::init()
 	initShaders();
 	banner = new Banner();
 	banner->init(glm::ivec2(0, 0), texProgram);
+
+	//Preparo nivel
 	changeLevel("level01");
 	banner->setLevel(1, 1);
-	banner->setPoints(100);
+	banner->setPoints(0);
+	numMonedasMario = 0;
+	numVidasMario = 3;
+
 	gameTime = 0;
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 	currentTime = 0.0f;
 
 	//Tocado
-	text = new Text();
-	text->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, 0, "DEVELOPED BY");
+	/*text = new Text();
+	text->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, 0, "DEVELOPED BY");*/
 	
 	//text->init(glm::vec2(float(2 * 16), float(4 * 16)), texProgram, 2, "0000000"); //Puntos
 }
@@ -71,18 +79,24 @@ void Scene::update(int deltaTime)
 	if (goomba != NULL) for (int i = 0; i < numGoomba; ++i) goomba[i].update(deltaTime);
 	if (koopa != NULL) for (int i = 0; i < numKoopa; ++i) koopa[i].update(deltaTime);
 	if (bloque != NULL) for (int i = 0; i < numBloque; ++i) bloque[i].update(deltaTime);
+	if (moneda != NULL) for (int i = 0; i < numMoneda; ++i) moneda[i].update(deltaTime);
 	player->update(deltaTime, pos_camara);
+
+	//BANNER
 	banner->update(deltaTime, pos_camara);
 	banner->setTime(gameTime);
+	banner->setPoints(puntosMario);
+	banner->setMonedas(numMonedasMario);
 
 	//FIN TIEMPO
 	/*int time = 400 - int(gameTime / 1000);
 	if (time <= 0) player->morirsalto();*/
 
+	printf("Current time: %f; Delta time: %d ", currentTime, deltaTime);
 
-	//Tocado 
-	glm::vec2 posMario1 = player->getPos();
-	glm::vec2 tamM1 = player->getTam();
+	glm::vec2 posMario = player->getPos();
+	glm::vec2 tamM = player->getTam();
+	//BLOQUES
 	if (bloque != NULL)
 	{
 		glm::vec2 posBloque;
@@ -91,28 +105,48 @@ void Scene::update(int deltaTime)
 		{
 			posBloque = bloque[i].getPos();
 			bool activo = bloque[i].getActivo();
-			if (collisionPlayerEnemy(posMario1, tamM1, posBloque, glm::ivec2(32, 32)) && activo) {
+			if (collisionPlayerEnemy(posMario, tamM, posBloque, glm::ivec2(32, 32)) && activo) {
 				//printf("colision %d ", i);
-				if (posMario1.y > posBloque.y) {
+				if (posMario.y > posBloque.y) {
 					string estadoMario = player->getEstado();
 					printf("Bloque");
 					bloque[i].setHit(estadoMario);
 					player->setBloque("UP", posBloque);
 				}
-				else if (posMario1.y < posBloque.y + 32) player->setBloque("DOWN", posBloque);
-				else if (posMario1.x < posBloque.x) player->setBloque("RIGHT", posBloque);
-				else if (posMario1.x > posBloque.x) player->setBloque("LEFT", posBloque);
+				else if (posMario.y < posBloque.y + 32) player->setBloque("DOWN", posBloque);
+				else if (posMario.x < posBloque.x) player->setBloque("RIGHT", posBloque);
+				else if (posMario.x > posBloque.x) player->setBloque("LEFT", posBloque);
 				not_collision = false;
 			}
 			else player->setBloque("NONE", posBloque);
 		}
 	}
-	
 
-	text->update(deltaTime);
-
-	glm::vec2 posMario = player->getPos();
-	glm::vec2 tamM = player->getTam();
+	//MONEDAS
+	if (moneda != NULL)
+	{
+		glm::vec2 posMoneda;
+		bool not_collision = true;
+		for (int i = 0; i < numMoneda && not_collision; ++i)
+		{
+			posMoneda = moneda[i].getPos();
+			bool activo = moneda[i].getActivo();
+			if (collisionPlayerEnemy(posMario, tamM, posMoneda, glm::ivec2(16, 8)) && activo) {
+				//printf("colision %d ", i);
+				if (posMario.y > posMoneda.y) {
+					printf("Bloque");
+					moneda[i].setHit();
+					numMonedasMario += 1;
+					puntosMario += 200;
+					if (numMonedasMario > 100)
+					{
+						numMonedasMario = 0;
+						numVidasMario += 1;
+					}
+				}
+			}
+		}
+	}
 
 	//GOOMBA
 	if (goomba != NULL)
@@ -256,12 +290,14 @@ void Scene::render()
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 	map->render();
-	player->render();
+	
 	if (goomba != NULL) for (int i = 0; i < numGoomba; ++i) goomba[i].render();
 	if (koopa != NULL) for (int i = 0; i < numKoopa; ++i) koopa[i].render();
-	//Tocado
+	if (moneda != NULL) for (int i = 0; i < numMoneda; ++i) moneda[i].render();
 	if (bloque != NULL) for (int i = 0; i < numBloque; ++i) bloque[i].render();
-	text->render(); 
+	
+	//text->render(); 
+	player->render();
 	banner->render();
 }
 
@@ -271,10 +307,12 @@ void Scene::changeLevel(string level)
 	goomba = NULL;
 	koopa = NULL;
 	bloque = NULL;
+	moneda = NULL;
 	numKoopa = 0;
 	numGoomba = 0;
 	numBloque = 0;
-	printf("changelevel");
+	numMoneda = 0;
+	//printf("changelevel");
 
 	//Cambio de nivel
 	if (level == "level01") {
@@ -287,6 +325,8 @@ void Scene::changeLevel(string level)
 		//banner->setLevel(1, 1);
 		//text->setText("ALERTEDPP PA");
 
+
+		//GOOMBAS
 		vector<pair<int, int>> posGoombas = map->getPosObj("GOOMBAS");
 		numGoomba = posGoombas.size();
 		printf(" Numero goombas: %d", numGoomba);
@@ -301,6 +341,7 @@ void Scene::changeLevel(string level)
 			}
 		}
 		
+		//KOOPAS
 		vector<pair<int, int>> posKoopas = map->getPosObj("KOOPAS");
 		numKoopa = posKoopas.size();
 		printf(" Numero koopas: %d", numKoopa);
@@ -315,6 +356,7 @@ void Scene::changeLevel(string level)
 			}
 		}
 		
+		//BLOQUES
 		vector<pair<int, int>> posInterrogantes = map->getPosObj("INTERROGANTES");
 		vector<pair<int, int>> posLadrillos = map->getPosObj("LADRILLOS");
 		int numI = posInterrogantes.size();
@@ -337,6 +379,21 @@ void Scene::changeLevel(string level)
 				bloque[i].setPosition(glm::vec2(posLadrillos[j].first * map->getTileSize(), posLadrillos[j].second * map->getTileSize()));
 				bloque[i].setTileMap(map);
 				++i;
+			}
+		}
+
+		//MONEDAS
+		vector<pair<int, int>> posMonedas = map->getPosObj("MONEDAS");
+		numMoneda = posMonedas.size();
+		//printf(" Numero koopas: %d", numMoneda);
+		if (numMoneda > 0)
+		{
+			moneda = new Moneda[numMoneda];
+			for (int i = 0; i < numMoneda; ++i)
+			{
+				moneda[i].init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+				moneda[i].setPosition(glm::vec2((posMonedas[i].first+0.25f) * map->getTileSize(), posMonedas[i].second * map->getTileSize()));
+				moneda[i].setTileMap(map);
 			}
 		}
 
