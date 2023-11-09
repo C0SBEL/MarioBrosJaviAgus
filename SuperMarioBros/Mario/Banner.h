@@ -25,8 +25,8 @@ public:
 private:
 	glm::ivec2 tileMapDispl;
 	ShaderProgram shader;
-	Texture spritesheetBanner;
-	Sprite* banner;
+	Texture spritesheetBanner, spritesheetMoneda;
+	Sprite* banner, *moneda;
 	Text* text;
 };
 

@@ -62,21 +62,37 @@ void Scene::init()
 
 	//Preparo nivel
 	changeLevel("level01");
-	banner->setLevel(1, 1);
+	banner->setLevel(world, level);
 	banner->setPoints(0);
 	numMonedasMario = 0;
 	numVidasMario = 3;
 
 	gameTime = 0;
+	record = 0;
 	finTiempo = false;
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 	currentTime = 0.0f;
+}
 
-	//Tocado
-	/*text = new Text();
-	text->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, 0, "DEVELOPED BY");*/
-	
-	//text->init(glm::vec2(float(2 * 16), float(4 * 16)), texProgram, 2, "0000000"); //Puntos
+void Scene::restart() 
+{
+	world = 1;
+	level = 1;
+	numKoopa = 0;
+	numGoomba = 0;
+	numBloque = 0;
+	numMoneda = 0;
+
+	numMonedasMario = 0;
+	numVidasMario = 3;
+	gameTime = 0;
+	puntosMario = 0;
+	finTiempo = false;
+
+	changeLevel("level01");
+	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
+	pos_camara = 0;
+	currentTime = 0.0f;
 }
 
 void Scene::update(int deltaTime)
@@ -165,6 +181,8 @@ void Scene::update(int deltaTime)
 					if (posMario.y < posGoomba.y) {
 						goomba[i].morint();
 						player->jump();
+						puntosMario += 100;
+						printf("GOOMBA 100");
 					}
 					else {
 						player->morirsalto();
@@ -218,6 +236,8 @@ void Scene::update(int deltaTime)
 					}
 					else {
 						koopa[i].transformToShell();
+						puntosMario += 100;
+						printf("KOPPA 100");
 					}
 				}
 				else {
@@ -258,7 +278,6 @@ void Scene::update(int deltaTime)
 		if (player->isRebooted()) {
 			if (finTiempo) changeLevel("timeUp");
 			else changeLevel("mundo");
-			//changeLevel("mundo");
 
 			banner->setTime(-1.f);
 			
@@ -273,8 +292,6 @@ void Scene::update(int deltaTime)
 		{
 			if (pantallaMundo != NULL) changeLevel("level01");
 			else if (pantallaTimeUp != NULL) changeLevel("mundo");
-			
-			//changeLevel("level01");
 
 			gameTime = 0;
 			
@@ -283,14 +300,14 @@ void Scene::update(int deltaTime)
 	}
 
 	if (banner != NULL) {
-		banner->setLevel(1, 1);
+		banner->setLevel(world, level);
 		//banner->setTime(gameTime);
 		banner->setPoints(puntosMario);
 		banner->setMonedas(numMonedasMario);
 	}
 
 	if (pantallaMundo != NULL) {
-		pantallaMundo->setLevel(1, 1);
+		pantallaMundo->setLevel(world, level);
 		pantallaMundo->setVides(numVidasMario);
 	}
 	
@@ -313,7 +330,7 @@ void Scene::update(int deltaTime)
 	//collision koopas
 
 	//FIN TIEMPO
-	int time = 10 - int(gameTime / 1000);
+	int time = 400 - int(gameTime / 1000);
 	if (time <= 0 && !player->isDying()) {
 		player->morirsalto();
 		numVidasMario -= 1;
@@ -326,6 +343,7 @@ void Scene::update(int deltaTime)
 		if (player != NULL) pos_camara += player->getVel();
 		projection = glm::ortho(pos_camara, float(SCREEN_WIDTH) + pos_camara, float(SCREEN_HEIGHT), 0.f);
 	}
+	//else projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 }
 
 void Scene::render()
@@ -352,7 +370,7 @@ void Scene::render()
 	banner->render();
 }
 
-void Scene::changeLevel(string level)
+void Scene::changeLevel(string lvl)
 {
 	//Elimino los elementos anteriores
 	player = NULL;
@@ -369,30 +387,30 @@ void Scene::changeLevel(string level)
 	//printf("changelevel");
 
 	//Cambio de nivel
-	if (level == "mundo") {
+	if (lvl == "mundo") {
 		pantallaMundo = new PantallaMundo();
 		pantallaMundo->init(glm::ivec2(0, 0), texProgram);
 	}
-	else if (level == "timeUp") {
+	else if (lvl == "timeUp") {
 		pantallaTimeUp = new PantallaTimeUp;
 		pantallaTimeUp->init(glm::ivec2(0, 0), texProgram);
 	}
-	else if (level == "level01") {
-		//pos_camara = 0;
-		map = TileMap::createTileMap("levels/level01.txt", "levels/objects01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
-		player = new Player();
+	else {
+		if (lvl == "level01") {
+			world = 1;
+			level = 1;
+			map = TileMap::createTileMap("levels/level01.txt", "levels/objects01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+			player = new Player();
+		}
+		
 		player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 		player->setTileMap(map);
 
-		//banner->setLevel(1, 1);
-		//text->setText("ALERTEDPP PA");
-
-
 		//GOOMBAS
 		vector<pair<int, int>> posGoombas = map->getPosObj("GOOMBAS");
 		numGoomba = posGoombas.size();
-		printf(" Numero goombas: %d", numGoomba);
+		//printf(" Numero goombas: %d", numGoomba);
 		if (numGoomba > 0)
 		{
 			goomba = new Goomba[numGoomba];
@@ -407,7 +425,7 @@ void Scene::changeLevel(string level)
 		//KOOPAS
 		vector<pair<int, int>> posKoopas = map->getPosObj("KOOPAS");
 		numKoopa = posKoopas.size();
-		printf(" Numero koopas: %d", numKoopa);
+		//printf(" Numero koopas: %d", numKoopa);
 		if (numKoopa > 0)
 		{
 			koopa = new Koopa[numKoopa];
@@ -510,3 +528,31 @@ bool Scene::collisionPlayerEnemy(glm::vec2 pos1, glm::vec2 tam1, glm::vec2 pos2,
 	return false;
 }
 
+bool Scene::isGameOver() {
+	if (numVidasMario <= 0)
+	{
+		if (puntosMario > record) record = puntosMario;
+		return true;
+	}
+	return false;
+}
+
+int Scene::getPoints() {
+	return puntosMario;
+}
+
+int Scene::getMonedas() {
+	return numMonedasMario;
+}
+
+int Scene::getWorld() {
+	return world;
+}
+
+int Scene::getLevel() {
+	return level;
+}
+
+int Scene::getRecord() {
+	return record;
+}
