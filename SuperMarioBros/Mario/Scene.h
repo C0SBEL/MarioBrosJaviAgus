@@ -12,6 +12,7 @@
 #include "Text.h" //tocado
 #include "Banner.h"
 #include "Moneda.h"
+#include "PantallaMundo.h"
 
 
 // Scene contains all the entities of our game.
@@ -50,6 +51,7 @@ private:
 	Text *text; //tocado
 	Banner* banner;
 	Moneda* moneda;
+	PantallaMundo* pantallaMundo;
 	int numKoopa, numGoomba, numBloque, numMoneda;
 	int numVidasMario, numMonedasMario, puntosMario;
 	float gameTime;
