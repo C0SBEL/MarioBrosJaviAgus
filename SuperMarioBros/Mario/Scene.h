@@ -13,6 +13,7 @@
 #include "Banner.h"
 #include "Moneda.h"
 #include "PantallaMundo.h"
+#include "PantallaTimeUp.h"
 
 
 // Scene contains all the entities of our game.
@@ -52,9 +53,11 @@ private:
 	Banner* banner;
 	Moneda* moneda;
 	PantallaMundo* pantallaMundo;
+	PantallaTimeUp* pantallaTimeUp;
 	int numKoopa, numGoomba, numBloque, numMoneda;
 	int numVidasMario, numMonedasMario, puntosMario;
 	float gameTime;
+	bool finTiempo;
 
 };
 

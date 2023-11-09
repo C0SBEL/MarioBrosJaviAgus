@@ -1,15 +1,15 @@
-#ifndef _PANTALLA_MUNDO
-#define _PANTALLA_MUNDO
+#ifndef _PANTALLA_TIME_UP
+#define _PANTALLA_TIME_UP
 
 #include "Sprite.h"
 #include "Text.h"
 
 
-class PantallaMundo
+class PantallaTimeUp
 {
 
 public:
-	~PantallaMundo();
+	~PantallaTimeUp();
 	void init(glm::ivec2 pos, ShaderProgram& shaderProgram);
 	void restart();
 
@@ -21,10 +21,8 @@ public:
 private:
 	glm::ivec2 tileMapDispl;
 	ShaderProgram shader;
-	Texture spritesheetPantallaMundo;
-	Sprite* pantallaMundo;
-	Text* text;
+	Texture spritesheetPantallaTimeUp;
+	Sprite* pantallaTimeUp;
 };
-
 
 #endif // _PANTALLA_MUNDO_INCLUDE

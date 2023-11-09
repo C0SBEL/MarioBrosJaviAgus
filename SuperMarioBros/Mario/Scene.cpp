@@ -27,6 +27,8 @@ Scene::Scene()
 	bloque = NULL;
 	banner = NULL;
 	moneda = NULL;
+	pantallaMundo = NULL;
+	pantallaTimeUp = NULL;
 }
 
 Scene::~Scene()
@@ -45,6 +47,10 @@ Scene::~Scene()
 		delete banner;
 	if (moneda != NULL)
 		delete moneda;
+	if (pantallaMundo != NULL)
+		delete pantallaMundo;
+	if (pantallaTimeUp != NULL)
+		delete pantallaTimeUp;
 }
 
 
@@ -62,6 +68,7 @@ void Scene::init()
 	numVidasMario = 3;
 
 	gameTime = 0;
+	finTiempo = false;
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 	currentTime = 0.0f;
 
@@ -82,16 +89,8 @@ void Scene::update(int deltaTime)
 	if (moneda != NULL) for (int i = 0; i < numMoneda; ++i) moneda[i].update(deltaTime);
 	if (player != NULL) player->update(deltaTime, pos_camara);
 	if (pantallaMundo != NULL) pantallaMundo->update(deltaTime, pos_camara);
-
-	//BANNER
-	banner->update(deltaTime, pos_camara);
-	
-
-	//FIN TIEMPO
-	/*int time = 400 - int(gameTime / 1000);
-	if (time <= 0) player->morirsalto();*/
-
-	printf("Current time: %f; Delta time: %d ", currentTime, deltaTime);
+	if (pantallaTimeUp != NULL) pantallaTimeUp->update(deltaTime, pos_camara);
+	if (banner != NULL) banner->update(deltaTime, pos_camara);
 
 	glm::vec2 posMario;
 	glm::vec2 tamM;
@@ -254,32 +253,45 @@ void Scene::update(int deltaTime)
 		}
 	}
 
+	//PLAYER
 	if (player != NULL) {
 		if (player->isRebooted()) {
-			changeLevel("mundo");
-			//changeLevel("level01");
-			banner->setLevel(1, 1);
+			if (finTiempo) changeLevel("timeUp");
+			else changeLevel("mundo");
+			//changeLevel("mundo");
+
 			banner->setTime(-1.f);
-			pantallaMundo->setLevel(1, 1);
-			pantallaMundo->setVides(numVidasMario);
+			
 			gameTime = 0;
 		}
 		else {
 			banner->setTime(gameTime);
-			banner->setPoints(puntosMario);
-			banner->setMonedas(numMonedasMario);
 		}
 	}
 	else {
 		if ((2 - int(gameTime / 1000) < 0))
 		{
-			changeLevel("level01");
+			if (pantallaMundo != NULL) changeLevel("level01");
+			else if (pantallaTimeUp != NULL) changeLevel("mundo");
+			
+			//changeLevel("level01");
+
 			gameTime = 0;
-			banner->setLevel(1, 1);
-			banner->setTime(gameTime);
-			banner->setPoints(puntosMario);
-			banner->setMonedas(numMonedasMario);
+			
+			banner->setTime(-1.f);
 		}
+	}
+
+	if (banner != NULL) {
+		banner->setLevel(1, 1);
+		//banner->setTime(gameTime);
+		banner->setPoints(puntosMario);
+		banner->setMonedas(numMonedasMario);
+	}
+
+	if (pantallaMundo != NULL) {
+		pantallaMundo->setLevel(1, 1);
+		pantallaMundo->setVides(numVidasMario);
 	}
 	
 	//collision goombas koopas
@@ -300,7 +312,13 @@ void Scene::update(int deltaTime)
 
 	//collision koopas
 
-
+	//FIN TIEMPO
+	int time = 10 - int(gameTime / 1000);
+	if (time <= 0 && !player->isDying()) {
+		player->morirsalto();
+		numVidasMario -= 1;
+		finTiempo = true;
+	}
 
 	//SCROLL
 	float cuadrant = posMario.x - pos_camara;
@@ -330,6 +348,7 @@ void Scene::render()
 	//text->render(); 
 	if (player != NULL) player->render();
 	if (pantallaMundo != NULL) pantallaMundo->render();
+	if (pantallaTimeUp != NULL) pantallaTimeUp->render();
 	banner->render();
 }
 
@@ -342,6 +361,7 @@ void Scene::changeLevel(string level)
 	bloque = NULL;
 	moneda = NULL;
 	pantallaMundo = NULL;
+	pantallaTimeUp = NULL;
 	numKoopa = 0;
 	numGoomba = 0;
 	numBloque = 0;
@@ -352,6 +372,10 @@ void Scene::changeLevel(string level)
 	if (level == "mundo") {
 		pantallaMundo = new PantallaMundo();
 		pantallaMundo->init(glm::ivec2(0, 0), texProgram);
+	}
+	else if (level == "timeUp") {
+		pantallaTimeUp = new PantallaTimeUp;
+		pantallaTimeUp->init(glm::ivec2(0, 0), texProgram);
 	}
 	else if (level == "level01") {
 		//pos_camara = 0;
@@ -438,6 +462,7 @@ void Scene::changeLevel(string level)
 		//pos_camara = 0;
 	}
 	pos_camara = 0;
+	finTiempo = false;
 }
 
 

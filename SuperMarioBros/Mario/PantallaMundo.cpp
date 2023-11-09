@@ -12,8 +12,8 @@ PantallaMundo::~PantallaMundo() {
 void PantallaMundo::init(glm::ivec2 tileMapPos, ShaderProgram& shaderProgram)
 {
 	shader = shaderProgram;
-	spritesheetBanner.loadFromFile("images/PantallaMundo.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	banner = Sprite::createSprite(glm::ivec2(256 * 2, 240 * 2), glm::vec2(1, 1), &spritesheetBanner, &shaderProgram);
+	spritesheetPantallaMundo.loadFromFile("images/PantallaMundo.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	pantallaMundo = Sprite::createSprite(glm::ivec2(256 * 2, 240 * 2), glm::vec2(1, 1), &spritesheetPantallaMundo, &shaderProgram);
 
 	text = new Text[3];
 	text[0].init(glm::vec2(float(17 * 16), float(10 * 16)), shaderProgram, 2, 0, "0"); //World
@@ -21,7 +21,7 @@ void PantallaMundo::init(glm::ivec2 tileMapPos, ShaderProgram& shaderProgram)
 	text[2].init(glm::vec2(float(17 * 16), float(14 * 16)), shaderProgram, 2, 0, "00"); //Vidas
 
 	tileMapDispl = tileMapPos;
-	banner->setPosition(glm::vec2(float(tileMapDispl.x), float(tileMapDispl.y)));
+	pantallaMundo->setPosition(glm::vec2(float(tileMapDispl.x), float(tileMapDispl.y)));
 }
 
 void PantallaMundo::restart()
@@ -31,13 +31,13 @@ void PantallaMundo::restart()
 
 void PantallaMundo::update(int deltaTime, int pos_camara)
 {
-	banner->setPosition(glm::vec2(float(tileMapDispl.x + pos_camara), float(tileMapDispl.y)));
+	pantallaMundo->setPosition(glm::vec2(float(tileMapDispl.x + pos_camara), float(tileMapDispl.y)));
 	for (int i = 0; i < 3; ++i) text[i].setPosition(glm::vec2(float(tileMapDispl.x + pos_camara), float(tileMapDispl.y)));
 }
 
 void PantallaMundo::render()
 {
-	banner->render();
+	pantallaMundo->render();
 	for (int i = 0; i < 3; ++i) text[i].render();
 }
 
