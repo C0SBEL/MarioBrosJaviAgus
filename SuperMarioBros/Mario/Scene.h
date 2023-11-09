@@ -28,12 +28,20 @@ public:
 	~Scene();
 
 	void init();
+	void restart();
 	void update(int deltaTime);
 	void render();
 
 	void changeLevel(string level);
 
 	bool collisionPlayerEnemy(glm::vec2 pos1, glm::vec2 tam1, glm::vec2 pos2, glm::vec2 tam2);
+	bool isGameOver();
+
+	int getPoints();
+	int getMonedas();
+	int getWorld();
+	int getLevel();
+	int getRecord();
 
 private:
 	void initShaders();
@@ -55,7 +63,8 @@ private:
 	PantallaMundo* pantallaMundo;
 	PantallaTimeUp* pantallaTimeUp;
 	int numKoopa, numGoomba, numBloque, numMoneda;
-	int numVidasMario, numMonedasMario, puntosMario;
+	int numVidasMario, numMonedasMario, puntosMario, record;
+	int world, level;
 	float gameTime;
 	bool finTiempo;
 

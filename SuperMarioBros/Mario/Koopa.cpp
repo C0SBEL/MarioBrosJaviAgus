@@ -5,6 +5,10 @@
 #include "Koopa.h"
 #include "Game.h"
 
+#define JUMP_ANGLE_STEP 20
+#define JUMP_HEIGHT 20
+#define FALL_STEP 2
+
 enum KoopaAnims
 {
 	MOVE_LEFT, MOVE_RIGHT, SHELL, SHELL_LEGS, NONE
@@ -26,7 +30,7 @@ void Koopa::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	spritekoopa->addKeyframe(MOVE_RIGHT, glm::vec2(tamk, 0.5f));
 
 	spritekoopa->setAnimationSpeed(NONE, 8);
-	spritekoopa->addKeyframe(NONE, glm::vec2(2*tamk, 0.f));
+	spritekoopa->addKeyframe(NONE, glm::vec2(2 * tamk, 0.f));
 
 	spritesheetshell.loadFromFile("images/KoopaCaparazon.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	float tams = 0.5;
@@ -41,60 +45,101 @@ void Koopa::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	spriteshell->addKeyframe(SHELL_LEGS, glm::vec2(tams, 0.f));
 
 	spriteshell->setAnimationSpeed(NONE, 8);
-	spriteshell->addKeyframe(NONE, glm::vec2(2*tams, 0.f));
+	spriteshell->addKeyframe(NONE, glm::vec2(2 * tams, 0.f));
 
 	spritekoopa->changeAnimation(MOVE_LEFT);
 	spriteshell->changeAnimation(NONE);
 	tileMapDispl = tileMapPos;
 	spritekoopa->setPosition(glm::vec2(float(tileMapDispl.x + posKoopa.x), float(tileMapDispl.y + posKoopa.y)));
 	spriteshell->setPosition(glm::vec2(float(tileMapDispl.x + posKoopa.x), float(tileMapDispl.y + posKoopa.y)));
+
+	//inicializaciones
+
 	tamKoopa = glm::vec2(32, 48);
 	sprite = spritekoopa;
 	vel = 1;
-	//tam shell = (32,32)
+	moveshell = false;
+	dying = false;
+	active = true;
+	accelerador = 1;
+	jumpAngle = 0;
 
 }
 
 void Koopa::update(int deltaTime)
 {
-	sprite->update(deltaTime);
-	//printf("Pos Koopa y: %d \n", posKoopa.y);
-	if (sprite == spritekoopa){
-		if (sprite->animation() == MOVE_LEFT){
-			posKoopa.x -= vel;
-				if (map->collisionMoveLeft(posKoopa, tamKoopa) || posKoopa.x <= 0) sprite->changeAnimation(MOVE_RIGHT);
-		}
-		else if (sprite->animation() == MOVE_RIGHT){
-			posKoopa.x += vel;
-			if (map->collisionMoveRight(posKoopa, tamKoopa) || posKoopa.x >= 240 *32 ) sprite->changeAnimation(MOVE_LEFT);
-		}
-	}
+	if (active) {
+		if (!dying) {
+			sprite->update(deltaTime);
+			//printf("Pos Koopa y: %d \n", posKoopa.y);
+			if (sprite == spritekoopa) {
+				if (sprite->animation() == MOVE_LEFT) {
+					posKoopa.x -= vel;
+					if (map->collisionMoveLeft(posKoopa, tamKoopa) || posKoopa.x <= 0) {
+						sprite->changeAnimation(MOVE_RIGHT);
+						posKoopa.x += vel;
+					}
+					if (!map->collisionMoveDown(glm::ivec2(posKoopa.x, posKoopa.y + 2), tamKoopa, &posKoopa.y)) {
+						changeDirection();
+					}
+				}
+				else if (sprite->animation() == MOVE_RIGHT) {
+					posKoopa.x += vel;
+					if (map->collisionMoveRight(posKoopa, tamKoopa) || posKoopa.x >= 240 * 32) {
+						sprite->changeAnimation(MOVE_LEFT);
+						posKoopa.x -= vel;
+					}
+					if (!map->collisionMoveDown(glm::ivec2(posKoopa.x, posKoopa.y + 2), tamKoopa, &posKoopa.y)) {
+						changeDirection();
+					}
+				}
+			}
 
-	else if (moveshell) {
-		if (left)
-		{
-			posKoopa.x -= vel;
-			if (map->collisionMoveLeft(posKoopa, tamKoopa) || posKoopa.x <= 0)
-			{
-				left = false;
+			else if (moveshell) {
+				if (left)
+				{
+					posKoopa.x -= vel;
+					if (map->collisionMoveLeft(posKoopa, tamKoopa) || posKoopa.x <= 0)
+					{
+						posKoopa.x += vel;
+						left = false;
+					}
+					if (!map->collisionMoveDown(glm::ivec2(posKoopa.x, posKoopa.y + 2), tamKoopa, &posKoopa.y)) {
+						posKoopa.y += vel;
+					}
+				}
+				else
+				{
+					posKoopa.x += vel;
+					if (map->collisionMoveRight(posKoopa, tamKoopa) || posKoopa.x >= 240 * 32)
+					{
+						posKoopa.x -= vel;
+						left = true;
+					}
+					if (!map->collisionMoveDown(glm::ivec2(posKoopa.x, posKoopa.y + 2), tamKoopa, &posKoopa.y)) {
+						posKoopa.y += vel;
+					}
+				}
 			}
 		}
-		else
-		{
-			posKoopa.x += vel;
-			if (map->collisionMoveRight(posKoopa, tamKoopa) || posKoopa.x >= 240 * 32)
-			{
-				left = true;
+		sprite->setPosition(glm::vec2(float(tileMapDispl.x + posKoopa.x), float(tileMapDispl.y + posKoopa.y)));
+		if (dying) {
+			++time;
+			jumpDie();
+			sprite->setPosition(glm::vec2(float(tileMapDispl.x + posKoopa.x), float(tileMapDispl.y + posKoopa.y)));
+			sprite->update(deltaTime);
+			if (time == 60) {
+				printf("se deja de ver goomba");
+				active = false;
+				time = 0;
 			}
 		}
-
 	}
-	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posKoopa.x), float(tileMapDispl.y + posKoopa.y)));
 }
 
 void Koopa::render()
 {
-	sprite->render();
+	if (active) sprite->render();
 }
 
 void Koopa::setTileMap(TileMap* tileMap)
@@ -144,4 +189,25 @@ bool Koopa::isShell() {
 
 bool Koopa::ismoveShell() {
 	return moveshell;
+}
+
+void Koopa::morintKoopa() {
+	//sprite->changeAnimation(DOWN);
+	dying = true;
+	startY = posKoopa.y;
+}
+
+void Koopa::jumpDie() {
+	if (jumpAngle < 90) {
+		jumpAngle += JUMP_ANGLE_STEP;
+		posKoopa.y = int(startY - JUMP_HEIGHT * sin(3.14159f * jumpAngle / 180.f));
+	}
+	else {
+		++accelerador;
+		posKoopa.y += FALL_STEP + accelerador;
+	}
+}
+
+bool Koopa::isDying() {
+	return dying;
 }
