@@ -71,6 +71,7 @@ void Banner::setTime(float gameTime)
 	int time = 400 - int(gameTime / 1000);
 	if (time < 10) text[4].setText("00" + to_string(time));
 	else if (time < 100) text[4].setText("0" + to_string(time));
+	else if (gameTime > 400) text[4].setText("   ");
 	else text[4].setText(to_string(time));
 }
 

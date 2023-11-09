@@ -6,7 +6,7 @@
 
 
 #define SCREEN_X 0
-#define SCREEN_Y 16
+#define SCREEN_Y 0
 
 #define INIT_PLAYER_X_TILES 4
 #define INIT_PLAYER_Y_TILES 10
@@ -80,13 +80,12 @@ void Scene::update(int deltaTime)
 	if (koopa != NULL) for (int i = 0; i < numKoopa; ++i) koopa[i].update(deltaTime);
 	if (bloque != NULL) for (int i = 0; i < numBloque; ++i) bloque[i].update(deltaTime);
 	if (moneda != NULL) for (int i = 0; i < numMoneda; ++i) moneda[i].update(deltaTime);
-	player->update(deltaTime, pos_camara);
+	if (player != NULL) player->update(deltaTime, pos_camara);
+	if (pantallaMundo != NULL) pantallaMundo->update(deltaTime, pos_camara);
 
 	//BANNER
 	banner->update(deltaTime, pos_camara);
-	banner->setTime(gameTime);
-	banner->setPoints(puntosMario);
-	banner->setMonedas(numMonedasMario);
+	
 
 	//FIN TIEMPO
 	/*int time = 400 - int(gameTime / 1000);
@@ -94,8 +93,14 @@ void Scene::update(int deltaTime)
 
 	//printf("Current time: %f; Delta time: %d ", currentTime, deltaTime);
 
-	glm::vec2 posMario = player->getPos();
-	glm::vec2 tamM = player->getTam();
+	glm::vec2 posMario;
+	glm::vec2 tamM;
+	if (player != NULL)
+	{
+		posMario = player->getPos();
+		tamM = player->getTam();
+	}
+	
 	//BLOQUES
 	if (bloque != NULL)
 	{
@@ -224,13 +229,31 @@ void Scene::update(int deltaTime)
 		}
 	}
 
-	if (player->isRebooted()) {
-		changeLevel("level01");
-		banner->setLevel(1, 1);
-		gameTime = 0;
+	if (player != NULL) {
+		if (player->isRebooted()) {
+			changeLevel("mundo");
+			//changeLevel("level01");
+			banner->setLevel(1, 1);
+			banner->setTime(404.f);
+			gameTime = 0;
+		}
+		else {
+			banner->setTime(gameTime);
+			banner->setPoints(puntosMario);
+			banner->setMonedas(numMonedasMario);
+		}
 	}
-	
-
+	else {
+		if ((2 - int(gameTime / 1000) < 0))
+		{
+			changeLevel("level01");
+			gameTime = 0;
+			banner->setLevel(1, 1);
+			banner->setTime(gameTime);
+			banner->setPoints(puntosMario);
+			banner->setMonedas(numMonedasMario);
+		}
+	}
 	
 	//collision goombas koopas
 	/*
@@ -278,17 +301,20 @@ void Scene::render()
 	if (bloque != NULL) for (int i = 0; i < numBloque; ++i) bloque[i].render();
 	
 	//text->render(); 
-	player->render();
+	if (player != NULL) player->render();
+	if (pantallaMundo != NULL) pantallaMundo->render();
 	banner->render();
 }
 
 void Scene::changeLevel(string level)
 {
 	//Elimino los elementos anteriores
+	player = NULL;
 	goomba = NULL;
 	koopa = NULL;
 	bloque = NULL;
 	moneda = NULL;
+	pantallaMundo = NULL;
 	numKoopa = 0;
 	numGoomba = 0;
 	numBloque = 0;
@@ -296,7 +322,11 @@ void Scene::changeLevel(string level)
 	//printf("changelevel");
 
 	//Cambio de nivel
-	if (level == "level01") {
+	if (level == "mundo") {
+		pantallaMundo = new PantallaMundo();
+		pantallaMundo->init(glm::ivec2(0, 0), texProgram);
+	}
+	else if (level == "level01") {
 		map = TileMap::createTileMap("levels/level01.txt", "levels/objects01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 		player = new Player();
 		player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
