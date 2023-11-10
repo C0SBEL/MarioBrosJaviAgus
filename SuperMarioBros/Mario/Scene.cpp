@@ -61,6 +61,8 @@ void Scene::init()
 	banner->init(glm::ivec2(0, 0), texProgram);
 
 	//Preparo nivel
+	world = 1;
+	level = 1;
 	changeLevel("level01");
 	banner->setLevel(world, level);
 	banner->setPoints(0);
@@ -127,8 +129,8 @@ void Scene::update(int deltaTime)
 		{
 			posBloque = bloque[i].getPos();
 			bool activo = bloque[i].getActivo();
-			glm::vec2 colMario = posMario+tamM/2.f;
-			glm::vec2 colTamMario = glm::vec2(1, tamM.y/2);
+			glm::vec2 colMario = posMario+glm::vec2(tamM.x/2.f, 0.0f);
+			glm::vec2 colTamMario = glm::vec2(1.f, tamM.y);
 			if (collisionPlayerEnemy(colMario, colTamMario, posBloque, glm::ivec2(32, 32)) && activo) {
 				printf("colision %d ", i);
 				if (posMario.y > posBloque.y) {
@@ -154,9 +156,11 @@ void Scene::update(int deltaTime)
 		{
 			posMoneda = moneda[i].getPos();
 			bool activo = moneda[i].getActivo();
-			if (collisionPlayerEnemy(posMario, tamM, posMoneda, glm::ivec2(16, 32)) && activo) {
+			glm::vec2 colMario = posMario + glm::vec2(tamM.x / 2.f, 0.0f);
+			glm::vec2 colTamMario = glm::vec2(1.f, tamM.y);
+			if (collisionPlayerEnemy(colMario, colTamMario, posMoneda, glm::ivec2(16, 32)) && activo) {
 				//printf("colision %d ", i);
-				if (posMario.y > posMoneda.y) {
+				if (posMario.y >= posMoneda.y) {
 					printf("Moneda");
 					moneda[i].setHit();
 					numMonedasMario += 1;
@@ -311,7 +315,7 @@ void Scene::update(int deltaTime)
 	else {
 		if ((2 - int(gameTime / 1000) < 0))
 		{
-			if (pantallaMundo != NULL) changeLevel("level02");
+			if (pantallaMundo != NULL) changeLevel("level0"+to_string(level));
 			else if (pantallaTimeUp != NULL) changeLevel("mundo");
 
 			gameTime = 0;
@@ -366,8 +370,9 @@ void Scene::update(int deltaTime)
 	}
 	
 	//MIRAR SI GANAMOS
-	/*if (posMario.x == (10 * 16) && level == 1) {
-		win = true;
+	/*if (player->isBandera()) {
+	*	if (level = 1) changeLevel("level02);
+	*   else if (level = 2) win = true;
 	}*/
 }
 
