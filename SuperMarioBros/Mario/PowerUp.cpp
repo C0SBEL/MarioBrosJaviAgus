@@ -20,7 +20,7 @@ void PowerUp::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	//mushroom
 
 	spritemushroom.loadFromFile("images/mushroom.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	mushroom = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(0.5, 1), &spritemushroom, &shaderProgram);
+	mushroom = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.5, 1), &spritemushroom, &shaderProgram);
 	mushroom->setNumberAnimations(2);
 
 	mushroom->setAnimationSpeed(HITTED, 8);
@@ -29,13 +29,10 @@ void PowerUp::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	mushroom->setAnimationSpeed(NONE, 8);
 	mushroom->addKeyframe(NONE, glm::vec2(0.5, 0.f));
 
-	mushroom->changeAnimation(0);
-	mushroom ->setPosition(glm::vec2(float(tileMapDispl.x + posPowerUp.x), float(posPowerUp.y + posPowerUp.y)));
-
 	//star
 
 	spritestar.loadFromFile("images/star.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	star = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(0.5, 1), &spritemushroom, &shaderProgram);
+	star = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.5, 1), &spritemushroom, &shaderProgram);
 	star ->setNumberAnimations(2);
 
 	star ->setAnimationSpeed(HITTED, 8);
@@ -44,9 +41,10 @@ void PowerUp::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	star ->setAnimationSpeed(NONE, 8);
 	star->addKeyframe(NONE, glm::vec2(0.5, 0.f));
 
-	star ->changeAnimation(0);
-	star ->setPosition(glm::vec2(float(tileMapDispl.x + posPowerUp.x), float(posPowerUp.y + posPowerUp.y)));
-
+	mushroom->changeAnimation(NONE);
+	star->changeAnimation(HITTED);
+	mushroom->setPosition(glm::vec2(float(tileMapDispl.x + posPowerUp.x), float(posPowerUp.y + posPowerUp.y)));
+	star->setPosition(glm::vec2(float(tileMapDispl.x + posPowerUp.x), float(posPowerUp.y + posPowerUp.y)));
 	sprite = mushroom;
 }
 
@@ -57,21 +55,21 @@ void PowerUp::update(int deltaTime)
 	if (sprite->animation() == NONE && hit)
 	{
 		sprite->changeAnimation(HITTED);
-		posPowerUp.y -= 32;
+		//posPowerUp.y -= 32;
 		sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPowerUp.x), float(tileMapDispl.y + posPowerUp.y)));
 	}
 	else if (sprite->animation() == HITTED && hit)
 	{
-		if (time >= 20) hit = false;
+		if (time >= 32) hit = false;
 		else ++time;
 
-		posPowerUp.y -= 4;
+		posPowerUp.y -= 1;
 		sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPowerUp.x), float(tileMapDispl.y + posPowerUp.y)));
 	}
-	else if (sprite->animation() == HITTED && !hit)
+	/*else if (sprite->animation() == HITTED && !hit)
 	{
 		sprite->changeAnimation(NONE);
-	}
+	}*/
 }
 
 void PowerUp::render()
