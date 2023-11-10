@@ -60,7 +60,7 @@ void Goomba::update(int deltaTime)
 					{
 						moveGoomba = false;
 					}
-					//if (!map->collisionMoveDown(posGoomba, tamGoomba, &posGoomba.y)) posGoomba.y += FALL_STEP;
+					if (!map->collisionMoveDown(posGoomba, tamGoomba, &posGoomba.y)) posGoomba.y += 1;
 				}
 				else
 				{
@@ -70,6 +70,7 @@ void Goomba::update(int deltaTime)
 						//posGoomba.x -= 0.5;
 						moveGoomba = true;
 					}
+					if (!map->collisionMoveDown(posGoomba, tamGoomba, &posGoomba.y)) posGoomba.y += 1;
 				}
 			}
 			sprite->setPosition(glm::vec2(float(tileMapDispl.x + posGoomba.x), float(tileMapDispl.y + posGoomba.y)));

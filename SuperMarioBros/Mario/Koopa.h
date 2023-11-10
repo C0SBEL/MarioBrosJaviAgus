@@ -30,10 +30,12 @@ public:
 	void jumpDie();
 	void morintKoopa();
 	bool isDying();
+	void setCollisionDown(bool b);
+	void setBloque(string direction, const glm::vec2& posB);
 
 private:
-	bool moveKoopa, moveshell, left, dying, active;
-	glm::ivec2 tileMapDispl, posKoopa;
+	bool moveKoopa, moveshell, left, dying, active, collisiondown;
+	glm::ivec2 tileMapDispl, posKoopa, posBloque;
 	glm::vec2 tamKoopa;
 	int jumpAngle, startY;
 	Texture spritesheet, spritesheetshell;
@@ -41,6 +43,7 @@ private:
 	TileMap* map;
 	int time, accelerador;
 	float vel;
+	string hitBloque;
 
 };
 

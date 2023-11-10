@@ -63,6 +63,7 @@ void Koopa::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	active = true;
 	accelerador = 1;
 	jumpAngle = 0;
+	collisiondown = false;
 
 }
 
@@ -173,8 +174,14 @@ void Koopa::transformToShell() {
 }
 
 void Koopa::changeDirection() {
-	if ((sprite->animation() == MOVE_LEFT)) sprite->changeAnimation(MOVE_RIGHT);
-	else sprite->changeAnimation(MOVE_LEFT);
+	if ((sprite->animation() == MOVE_LEFT)) {
+		posKoopa.x += vel;
+		sprite->changeAnimation(MOVE_RIGHT);
+	}
+	else {
+		posKoopa.x -= vel;
+		sprite->changeAnimation(MOVE_LEFT);
+	}
 }
 
 void Koopa::moveShell(bool left) {
@@ -210,4 +217,21 @@ void Koopa::jumpDie() {
 
 bool Koopa::isDying() {
 	return dying;
+}
+
+void Koopa::setCollisionDown(bool b) {
+	collisiondown = b;
+}
+
+
+void Koopa::setBloque(string d, const glm::vec2& posB)
+{
+	hitBloque = d;
+	posBloque = posB;
+
+	if (hitBloque == "DOWN")
+	{
+		int aux = (posKoopa.y + tamKoopa.y) - posB.y;
+		posKoopa.y -= aux;
+	}
 }

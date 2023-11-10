@@ -50,7 +50,7 @@ void Moneda::update(int deltaTime)
 		if (time >= 20) hit = false;
 		else ++time;
 
-		posMoneda.y -= 2;
+		posMoneda.y -= 4;
 		moneda->setPosition(glm::vec2(float(tileMapDispl.x + posMoneda.x), float(tileMapDispl.y + posMoneda.y)));
 	}
 	else if (moneda->animation() == HITTED && !hit)
