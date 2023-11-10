@@ -127,10 +127,18 @@
     <ClInclude Include="AnimKeyframes.h" />
     <ClInclude Include="Banner.h" />
     <ClInclude Include="Bloque.h" />
+    <ClInclude Include="Credits.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Goomba.h" />
     <ClInclude Include="Koopa.h" />
+    <ClInclude Include="Moneda.h" />
     <ClInclude Include="Objeto.h" />
+    <ClInclude Include="PantallaGameOver.h" />
+    <ClInclude Include="PantallaInicial.h" />
+    <ClInclude Include="PantallaInstrucciones.h" />
+    <ClInclude Include="PantallaMundo.h" />
+    <ClInclude Include="PantallaTimeUp.h" />
+    <ClInclude Include="PantallaWin.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
@@ -143,11 +151,19 @@
   <ItemGroup>
     <ClCompile Include="Banner.cpp" />
     <ClCompile Include="Bloque.cpp" />
+    <ClCompile Include="Credits.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Goomba.cpp" />
     <ClCompile Include="Koopa.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Moneda.cpp" />
     <ClCompile Include="Objeto.cpp" />
+    <ClCompile Include="PantallaGameOver.cpp" />
+    <ClCompile Include="PantallaInicial.cpp" />
+    <ClCompile Include="PantallaInstrucciones.cpp" />
+    <ClCompile Include="PantallaMundo.cpp" />
+    <ClCompile Include="PantallaTimeUp.cpp" />
+    <ClCompile Include="PantallaWin.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -170,20 +186,38 @@
     <Image Include="images\Koopa.png" />
     <Image Include="images\KoopaCaparazon.png" />
     <Image Include="images\Mario.png" />
+    <Image Include="images\Moneda.png" />
+    <Image Include="images\MonedaBanner.png" />
+    <Image Include="images\PantallaGameOver.png" />
+    <Image Include="images\PantallaInicial.png" />
+    <Image Include="images\PantallaMundo.png" />
+    <Image Include="images\PantallaTimeUp.png" />
     <Image Include="images\rocks.jpg" />
     <Image Include="images\SuperMario.png" />
     <Image Include="images\tipografia.png" />
+    <Image Include="images\tipografia_red.png" />
     <Image Include="images\varied.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Debug\freeglut.dll" />
     <None Include="Debug\freetype6.dll" />
     <None Include="Debug\glew32.dll" />
+    <None Include="Debug\Mario.exe.recipe" />
+    <None Include="Debug\Mario.tlog\unsuccessfulbuild" />
     <None Include="levels\agus.tsx" />
     <None Include="levels\world1.tmx" />
+    <None Include="shaders\simple.frag" />
+    <None Include="shaders\simple.vert" />
+    <None Include="shaders\texture.frag" />
+    <None Include="shaders\texture.vert" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Debug\Mario.Build.CppClean.log" />
+    <Text Include="Debug\Mario.log" />
+    <Text Include="Debug\Mario.vcxproj.FileListAbsolute.txt" />
     <Text Include="levels\level01.txt" />
+    <Text Include="levels\level02.txt" />
+    <Text Include="levels\objects01.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
