@@ -30,7 +30,7 @@ void Moneda::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	moneda->setAnimationSpeed(NONE, 8);
 	moneda->addKeyframe(NONE, glm::vec2(0.2 * 4, 0.f));
 	
-	moneda->changeAnimation(HITTED);
+	moneda->changeAnimation(NONE);
 	tileMapDispl = tileMapPos;
 	moneda->setPosition(glm::vec2(float(tileMapDispl.x + posMoneda.x), float(tileMapDispl.y + posMoneda.y)));
 }
@@ -39,25 +39,24 @@ void Moneda::update(int deltaTime)
 {
 	moneda->update(deltaTime);
 
-	/*if (moneda->animation() == NONE)
+	if (moneda->animation() == NONE && hit)
 	{
-		if (hit)
-		{
-			moneda->changeAnimation(HITTED);
-			moneda->setPosition(glm::vec2(float(tileMapDispl.x + posMoneda.x), float(tileMapDispl.y + posMoneda.y - 64)));
-			hit = false;
-		}
+		moneda->changeAnimation(HITTED);
+		posMoneda.y -= 32;
+		moneda->setPosition(glm::vec2(float(tileMapDispl.x + posMoneda.x), float(tileMapDispl.y + posMoneda.y)));
 	}
-	else if (moneda->animation() == HITTED) 
+	else if (moneda->animation() == HITTED && hit)
 	{
-		if (!hit)
-		{
-			moneda->changeAnimation(NONE);
-			moneda->setPosition(glm::vec2(float(tileMapDispl.x + posMoneda.x), float(tileMapDispl.y + posMoneda.y + 64)));
-			activado = false;
-		}
-	}*/
-	moneda->setPosition(glm::vec2(float(tileMapDispl.x + posMoneda.x), float(tileMapDispl.y + posMoneda.y)));
+		if (time >= 20) hit = false;
+		else ++time;
+
+		posMoneda.y -= 2;
+		moneda->setPosition(glm::vec2(float(tileMapDispl.x + posMoneda.x), float(tileMapDispl.y + posMoneda.y)));
+	}
+	else if (moneda->animation() == HITTED && !hit)
+	{
+		moneda->changeAnimation(NONE);
+	}
 }
 
 void Moneda::render()
@@ -87,6 +86,7 @@ bool Moneda::getActivo() const {
 
 void Moneda::setHit()
 {
-	printf(" SET HIT ");
+	time = 0;
 	hit = true;
+	activado = false;
 }

@@ -202,9 +202,11 @@ void Player::update(int deltaTime, float poscam)
 
 		if (!dying) {
 
+			//Caer
 			if (posPlayer.y > 14 * tamPlayer.x) {
 				posPlayer.y = 14 * tamPlayer.x;
 				dying = true;
+				falling = true;
 				sprite->changeAnimation(DEAD);
 			}
 
@@ -384,11 +386,7 @@ void Player::setBloque(string d, const glm::vec2 &posB)
 {
 	hitBloque = d;
 	posBloque = posB;
-	/*if (hitBloque == "UP") printf(" UP ");
-	else if (hitBloque == "DOWN") printf(" DOWN ");
-	else if (hitBloque == "LEFT") printf(" LEFT ");
-	else if (hitBloque == "RIGHT") printf(" RIGHT ");
-	else if (hitBloque == "NONE") printf(" NONE ");*/
+
 	if (hitBloque == "DOWN")
 	{
 		int aux = (posPlayer.y + tamPlayer.y) - posB.y;
@@ -420,4 +418,12 @@ bool Player::isDying() {
 
 bool Player::isRebooted() {
 	return rebooted;
+}
+
+bool Player::isFalling() {
+	if (falling) {
+		falling = false;
+		return true;
+	}
+	else return false;
 }

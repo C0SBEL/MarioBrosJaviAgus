@@ -36,6 +36,7 @@ public:
 
 	bool collisionPlayerEnemy(glm::vec2 pos1, glm::vec2 tam1, glm::vec2 pos2, glm::vec2 tam2);
 	bool isGameOver();
+	bool hasWon();
 
 	int getPoints();
 	int getMonedas();
@@ -66,7 +67,9 @@ private:
 	int numVidasMario, numMonedasMario, puntosMario, record;
 	int world, level;
 	float gameTime;
-	bool finTiempo;
+	bool finTiempo, win;
+
+	string estadoMario;
 
 };
 

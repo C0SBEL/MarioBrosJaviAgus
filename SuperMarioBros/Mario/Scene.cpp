@@ -88,6 +88,7 @@ void Scene::restart()
 	gameTime = 0;
 	puntosMario = 0;
 	finTiempo = false;
+	win = false;
 
 	changeLevel("level01");
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
@@ -114,6 +115,7 @@ void Scene::update(int deltaTime)
 	{
 		posMario = player->getPos();
 		tamM = player->getTam();
+		estadoMario = player->getEstado();
 	}
 	
 	//BLOQUES
@@ -128,7 +130,6 @@ void Scene::update(int deltaTime)
 			if (collisionPlayerEnemy(posMario, tamM, posBloque, glm::ivec2(32, 32)) && activo) {
 				//printf("colision %d ", i);
 				if (posMario.y > posBloque.y) {
-					string estadoMario = player->getEstado();
 					printf("Bloque");
 					bloque[i].setHit(estadoMario);
 					player->setBloque("UP", posBloque);
@@ -151,10 +152,10 @@ void Scene::update(int deltaTime)
 		{
 			posMoneda = moneda[i].getPos();
 			bool activo = moneda[i].getActivo();
-			if (collisionPlayerEnemy(posMario, tamM, posMoneda, glm::ivec2(16, 8)) && activo) {
+			if (collisionPlayerEnemy(posMario, tamM, posMoneda, glm::ivec2(16, 32)) && activo) {
 				//printf("colision %d ", i);
 				if (posMario.y > posMoneda.y) {
-					printf("Bloque");
+					printf("Moneda");
 					moneda[i].setHit();
 					numMonedasMario += 1;
 					puntosMario += 200;
@@ -178,13 +179,14 @@ void Scene::update(int deltaTime)
 				glm::vec2 posGoomba = goomba[i].getPos();
 				glm::vec2 tamG = goomba[i].getTam();
 				if (!player->isDying() && collisionPlayerEnemy(posMario, tamM, posGoomba, tamG)) {
-					if (posMario.y < posGoomba.y) {
+					//Mario mata goomba
+					if (posMario.y < posGoomba.y || estadoMario == "STARMARIO") {
 						goomba[i].morint();
 						player->jump();
 						puntosMario += 100;
 						printf("GOOMBA 100");
 					}
-					else {
+					else if (estadoMario == "MARIO") {
 						player->morirsalto();
 						numVidasMario -= 1;
 					}
@@ -200,6 +202,7 @@ void Scene::update(int deltaTime)
 						}
 					}
 				}
+				//collision goomba con koopa
 				for (int j = 0; j < numKoopa; ++j) {
 					glm::vec2 posKoopa = koopa[j].getPos();
 					glm::vec2 tamK = koopa[j].getTam();
@@ -211,7 +214,10 @@ void Scene::update(int deltaTime)
 							else if (koopa[j].isShell() && !koopa[j].ismoveShell()) {
 								goomba[i].changeDirection();
 							}
-							else goomba[i].morintkoopa();
+							else {
+								goomba[i].morintkoopa();
+								puntosMario += 200;
+							}
 					}
 				}
 			}
@@ -226,6 +232,7 @@ void Scene::update(int deltaTime)
 			if (!koopa[i].isDying()) {
 				glm::vec2 posKoopa = koopa[i].getPos();
 				glm::vec2 tamK = koopa[i].getTam();
+				//Koppa con Mario
 				if (!player->isDying() && collisionPlayerEnemy(posMario, tamM, posKoopa, tamK)) {
 					if (posMario.y + tamM.y / 2 <= posKoopa.y) {
 						player->jump();
@@ -234,24 +241,28 @@ void Scene::update(int deltaTime)
 							koopa[i].moveShell(left);
 						}
 						else {
+							printf("koopa se transforma en caparazon");
 							koopa[i].transformToShell();
+							puntosMario += 100;
 						}
 					}
 					else {
 						if (koopa[i].isShell() && !koopa[i].ismoveShell()) {
-							printf("caparazon se MUEVEEEEE");
+							printf("caparazon se mueve hacia la derecha");
 							bool left = posKoopa.x < posMario.x;
 							koopa[i].moveShell(left);
+							puntosMario += 100;
 						}
+						//Caparazon mata Mario
 						else
 						{
-							printf("caparazon se MUEVEEEEE");
+							printf("caparazon mata mario");
 							player->morirsalto();
 							numVidasMario -= 1;
 						}
 					}
 				}
-				//collision koopa koopa
+				//collision koopa con otros koopa
 				for (int j = 0; j < numKoopa; ++j) {
 					if (i != j) {
 						glm::vec2 posKoopa2 = koopa[j].getPos();
@@ -282,6 +293,7 @@ void Scene::update(int deltaTime)
 
 	//PLAYER
 	if (player != NULL) {
+		if (player->isFalling()) --numVidasMario;
 		if (player->isRebooted()) {
 			if (finTiempo) changeLevel("timeUp");
 			else changeLevel("mundo");
@@ -350,7 +362,11 @@ void Scene::update(int deltaTime)
 		if (player != NULL) pos_camara += player->getVel();
 		projection = glm::ortho(pos_camara, float(SCREEN_WIDTH) + pos_camara, float(SCREEN_HEIGHT), 0.f);
 	}
-	//else projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
+	
+	//MIRAR SI GANAMOS
+	/*if (posMario.x == (10 * 16) && level == 1) {
+		win = true;
+	}*/
 }
 
 void Scene::render()
@@ -542,6 +558,10 @@ bool Scene::isGameOver() {
 		return true;
 	}
 	return false;
+}
+
+bool Scene::hasWon() {
+	return win;
 }
 
 int Scene::getPoints() {

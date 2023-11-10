@@ -3,7 +3,7 @@
 #include "Game.h"
 
 enum CurrentScreen {
-	PANTALLA_INICIAL, GAME, GAME_OVER
+	PANTALLA_INICIAL, GAME, GAME_OVER, WIN, CREDITS
 };
 
 void Game::init()
@@ -14,6 +14,7 @@ void Game::init()
 	pantallaInicial.init();
 	scene.init();
 	pantallaGameOver.init();
+	credits.init();
 }
 
 bool Game::update(int deltaTime)
@@ -38,12 +39,33 @@ bool Game::update(int deltaTime)
 			int record = scene.getRecord();
 			pantallaInicial.setPoints(record);
 		}
-		//if (scene.hasWon()) currentScreen = WIN;
+		if (scene.hasWon()) {
+			/*int points = scene.getPoints();
+			int monedas = scene.getMonedas();
+			int world = scene.getWorld();
+			int level = scene.getLevel();
+			
+			pantallaWin.setPoints(points);
+			pantallaWin.setMonedas(monedas);
+			pantallaWin.setLevel(world, level);*/
+
+			//currentScreen = WIN;
+
+			/*int record = scene.getRecord();
+			pantallaInicial.setPoints(record);*/
+		}
 		break;
 	case GAME_OVER:
 		pantallaGameOver.update(deltaTime);
 		break;
+	case WIN:
+		pantallaWin.update(deltaTime);
+		break;
+	case CREDITS:
+		credits.update(deltaTime);
+		break;
 	}
+	
 	return bPlay;
 }
 
@@ -61,6 +83,12 @@ void Game::render()
 	case GAME_OVER:
 		pantallaGameOver.render();
 		break;
+	case WIN:
+		pantallaWin.render();
+		break;
+	case CREDITS:
+		credits.render();
+		break;
 	}
 }
 
@@ -77,8 +105,13 @@ void Game::keyPressed(int key)
 		case GAME_OVER:
 			currentScreen = PANTALLA_INICIAL;
 			break;
+		case WIN:
+			currentScreen = PANTALLA_INICIAL;
+			break;
+		case CREDITS:
+			currentScreen = PANTALLA_INICIAL;
+			break;
 		}
-		
 	}
 	keys[key] = true;
 }
@@ -118,7 +151,7 @@ void Game::mouseRelease(int button, int x, int y)
 			//currentScreen = INSTRUCTIONS;
 		}
 		if (x >= 80 && x < 192 && y >= 288 && y < 316) {
-			//currentScreen = CREDITS;
+			currentScreen = CREDITS;
 		}
 		if (x >= 304 && x < 368 && y >= 288 && y < 316) {
 			bPlay = false;

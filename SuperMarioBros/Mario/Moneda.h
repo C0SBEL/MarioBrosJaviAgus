@@ -26,7 +26,7 @@ private:
 	Sprite* moneda;
 	TileMap* map;
 
-
+	int time;
 	bool hit, activado;
 };
 

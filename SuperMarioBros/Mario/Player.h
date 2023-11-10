@@ -32,10 +32,11 @@ public:
 	bool isActive();
 	bool isDying();
 	bool isRebooted();
+	bool isFalling();
 	
 	
 private:
-	bool bJumping, cambioEstado, dying, active, rebooted;
+	bool bJumping, cambioEstado, dying, active, rebooted, falling;
 	glm::ivec2 tileMapDispl, posPlayer, tamPlayer, posBloque;
 	int jumpAngle, startY, vel, jump_angle_step, jump_height, fall_step;
 	Texture spritesheetMario, spritesheetSuperMario, spritesheetCambioEstado;

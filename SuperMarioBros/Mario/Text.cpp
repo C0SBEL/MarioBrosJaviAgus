@@ -29,12 +29,6 @@ void Text::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int 
 	case 1:
 		spritesheet.loadFromFile("images/tipografia_red.png", TEXTURE_PIXEL_FORMAT_RGBA);
 		break;
-	case 2:
-		spritesheet.loadFromFile("images/tipografia_blue.png", TEXTURE_PIXEL_FORMAT_RGBA);
-		break;
-	case 3:
-		spritesheet.loadFromFile("images/tipografia_green.png", TEXTURE_PIXEL_FORMAT_RGBA);
-		break;
 	default:
 		spritesheet.loadFromFile("images/tipografia.png", TEXTURE_PIXEL_FORMAT_RGBA);
 		break;
