@@ -33,17 +33,19 @@ public:
 	bool isDying();
 	bool isRebooted();
 	bool isFalling();
+	void cambiaEstado(string estadoanterior, string estadoposterior);
+	bool esInmune();
 	
 	
 private:
-	bool bJumping, cambioEstado, dying, active, rebooted, falling;
+	bool bJumping, cambioEstado, dying, active, rebooted, falling, superMario, starMario, inmunidad, renderizar;
 	glm::ivec2 tileMapDispl, posPlayer, tamPlayer, posBloque;
 	int jumpAngle, startY, vel, jump_angle_step, jump_height, fall_step;
 	Texture spritesheetMario, spritesheetSuperMario, spritesheetCambioEstado;
 	Sprite *sprite, *mario, *supermario, *cambioestado;
 	TileMap *map;
 	string hitBloque;
-	int time;
+	int time, timeinm, aux;
 
 
 };
