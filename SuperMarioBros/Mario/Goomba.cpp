@@ -56,7 +56,7 @@ void Goomba::update(int deltaTime)
 				if (moveGoomba)
 				{
 					posGoomba.x -= 1;
-					if (map->collisionMoveLeft(posGoomba, tamGoomba) || posGoomba.x <= 0)
+					if (map->collisionMoveLeft(posGoomba, tamGoomba))
 					{
 						moveGoomba = false;
 					}
@@ -65,7 +65,7 @@ void Goomba::update(int deltaTime)
 				else
 				{
 					posGoomba.x += 1;
-					if (map->collisionMoveRight(posGoomba, tamGoomba) || posGoomba.x >= 240 * 32)
+					if (map->collisionMoveRight(posGoomba, tamGoomba))
 					{
 						//posGoomba.x -= 0.5;
 						moveGoomba = true;

@@ -69,8 +69,7 @@ private:
 	int numVidasMario, numMonedasMario, puntosMario, record;
 	int world, level;
 	float gameTime;
-	bool finTiempo, win;
-
+	bool finTiempo, win, inmunidadMario;
 	string estadoMario;
 
 };

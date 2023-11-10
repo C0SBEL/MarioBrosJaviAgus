@@ -115,6 +115,7 @@ void Scene::update(int deltaTime)
 		posMario = player->getPos();
 		tamM = player->getTam();
 		estadoMario = player->getEstado();
+		inmunidadMario = player->esInmune();
 	}
 	
 	//BLOQUES
@@ -139,25 +140,6 @@ void Scene::update(int deltaTime)
 				not_collision = false;
 			}
 			else player->setBloque("NONE", posBloque);
-			
-			/*
-			for (int j = 0; j < numKoopa; ++j) {
-				glm::vec2 posKoopa2 = koopa[j].getPos();
-				glm::vec2 tamK2 = koopa[j].getTam();
-				if (!koopa[j].isDying() && collisionPlayerEnemy(glm::ivec2(posKoopa2.x, posKoopa2.y + 1), tamK2, posBloque, glm::ivec2(32, 32)) && activo) {
-					//printf("estoy encima del bloque");
-					if (posKoopa2.y < posBloque.y + 32) koopa[j].setBloque("DOWN", posBloque);
-					// else if (posKoopa2.x < posBloque.x) koopa[j].setBloque("RIGHT", posBloque);
-					// else if (posKoopa2.x > posBloque.x) koopa[j].setBloque("LEFT", posBloque);
-					not_collision = false;
-				}
-				else if (!collisionPlayerEnemy(glm::ivec2(posKoopa2.x, posKoopa2.y + 1), tamK2, posBloque, glm::ivec2(32, 32)) && activo) {
-						koopa[j].changeDirection();
-						printf("cambia direccion");
-					
-				}
-			}
-			*/
 		}
 	}
 
@@ -198,13 +180,14 @@ void Scene::update(int deltaTime)
 				glm::vec2 tamG = goomba[i].getTam();
 				if (!player->isDying() && collisionPlayerEnemy(posMario, tamM, posGoomba, tamG)) {
 					//Mario mata goomba
-					if (posMario.y < posGoomba.y || estadoMario == "STARMARIO") {
+					if (posMario.y < posGoomba.y) {
 						goomba[i].morint();
 						player->jump();
 						puntosMario += 100;
 						printf("GOOMBA 100");
 					}
-					else if (estadoMario == "MARIO") {
+					else if (estadoMario == "STARMARIO") player->cambiaEstado(estadoMario, "MARIO");
+					else if (estadoMario == "MARIO" && !inmunidadMario) {
 						player->morirsalto();
 						numVidasMario -= 1;
 					}
@@ -252,7 +235,7 @@ void Scene::update(int deltaTime)
 				glm::vec2 tamK = koopa[i].getTam();
 				//Koppa con Mario
 				if (!player->isDying() && collisionPlayerEnemy(posMario, tamM, posKoopa, tamK)) {
-					if (posMario.y + tamM.y / 2 <= posKoopa.y) {
+					if ((posMario.y + tamM.y / 2) + 1 <= posKoopa.y) {
 						player->jump();
 						if (koopa[i].isShell()) {
 							bool left = posKoopa.x < posMario.x;
@@ -264,7 +247,11 @@ void Scene::update(int deltaTime)
 							puntosMario += 100;
 						}
 					}
-					else {
+					else if (estadoMario == "SUPERMARIO") {
+						printf("cambia estado");
+						player->cambiaEstado(estadoMario, "MARIO");
+					}
+					else if (estadoMario == "MARIO" && !inmunidadMario) {
 						if (koopa[i].isShell() && !koopa[i].ismoveShell()) {
 							printf("caparazon se mueve hacia la derecha");
 							bool left = posKoopa.x < posMario.x;

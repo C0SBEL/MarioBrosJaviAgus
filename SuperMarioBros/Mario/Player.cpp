@@ -36,6 +36,9 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	time = 0;
 	active = true;
 	rebooted = false;
+	inmunidad = false;
+	renderizar = true;
+	aux = 0;
 
 	//MARIO
 	double tamM = 0.125;
@@ -184,8 +187,12 @@ void Player::update(int deltaTime, float poscam)
 		//Cambio manual de estado (Mario <--> Super Mario)
 		if (Game::instance().getKey('m') || Game::instance().getKey('M'))
 		{
-			if (sprite != mario) setSprite("mario");
-			else setSprite("supermario");
+			if (sprite != mario) {
+				setSprite("mario");
+			}
+			else {
+				setSprite("supermario");
+			}
 
 			Game::instance().keyReleased('M');
 			Game::instance().keyReleased('m');
@@ -317,16 +324,33 @@ void Player::update(int deltaTime, float poscam)
 			time++;
 			if (time == 100) {
 				rebooted = true;
+				time = 0;
+				active = false;
 			}
 
 		}
 		sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 	}
+
+	if (inmunidad) {
+		timeinm++;
+		if (timeinm == 150) {
+			inmunidad = false;
+			printf("se acabo inmunidad");
+			timeinm = 0;
+			renderizar = true;
+		}
+		else if (timeinm % 8 == 0) {
+			++aux;
+		}
+		else if (aux%2) renderizar = false;
+		else renderizar = true;
+	}
 }
 
 void Player::render()
 {
-	if (active) sprite->render();
+	if (active && renderizar) sprite->render();
 }
 
 void Player::setTileMap(TileMap *tileMap)
@@ -426,4 +450,17 @@ bool Player::isFalling() {
 		return true;
 	}
 	else return false;
+}
+
+void Player::cambiaEstado(string ea, string ep) {
+	if (ea == "SUPERMARIO" && ep == "MARIO") {
+		setSprite("mario");
+		inmunidad = true;
+	}
+	//else if (e == "SUPERMARIO") sprite = supermario;
+	//else starmario
+}
+
+bool Player::esInmune() {
+	return inmunidad;
 }
