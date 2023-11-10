@@ -3,7 +3,7 @@
 #include "Game.h"
 
 enum CurrentScreen {
-	PANTALLA_INICIAL, GAME, GAME_OVER, WIN, CREDITS
+	PANTALLA_INICIAL, GAME, GAME_OVER, WIN, CREDITS, INSTRUCTIONS
 };
 
 void Game::init()
@@ -15,6 +15,8 @@ void Game::init()
 	scene.init();
 	pantallaGameOver.init();
 	credits.init();
+	pantallaWin.init();
+	pantallaInstrucciones.init();
 }
 
 bool Game::update(int deltaTime)
@@ -23,6 +25,9 @@ bool Game::update(int deltaTime)
 	{
 	case PANTALLA_INICIAL:
 		pantallaInicial.update(deltaTime);
+		break;
+	case INSTRUCTIONS:
+		pantallaInstrucciones.update(deltaTime);
 		break;
 	case GAME:
 		scene.update(deltaTime);
@@ -49,7 +54,7 @@ bool Game::update(int deltaTime)
 			pantallaWin.setMonedas(monedas);
 			pantallaWin.setLevel(world, level);*/
 
-			//currentScreen = WIN;
+			currentScreen = WIN;
 
 			/*int record = scene.getRecord();
 			pantallaInicial.setPoints(record);*/
@@ -76,6 +81,9 @@ void Game::render()
 	{
 	case PANTALLA_INICIAL:
 		pantallaInicial.render();
+		break;
+	case INSTRUCTIONS:
+		pantallaInstrucciones.render();
 		break;
 	case GAME:
 		scene.render();
@@ -109,6 +117,9 @@ void Game::keyPressed(int key)
 			currentScreen = PANTALLA_INICIAL;
 			break;
 		case CREDITS:
+			currentScreen = PANTALLA_INICIAL;
+			break;
+		case INSTRUCTIONS:
 			currentScreen = PANTALLA_INICIAL;
 			break;
 		}
@@ -148,7 +159,7 @@ void Game::mouseRelease(int button, int x, int y)
 			scene.restart();
 		}
 		if (x >= 240 && x < 432 && y >= 240 && y < 256) {
-			//currentScreen = INSTRUCTIONS;
+			currentScreen = INSTRUCTIONS;
 		}
 		if (x >= 80 && x < 192 && y >= 288 && y < 316) {
 			currentScreen = CREDITS;

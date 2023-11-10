@@ -7,6 +7,7 @@
 #include "PantallaInicial.h"
 #include "Credits.h"
 #include "PantallaWin.h"
+#include "PantallaInstrucciones.h"
 
 
 #define SCREEN_WIDTH 512
@@ -53,6 +54,7 @@ private:
 	PantallaGameOver pantallaGameOver;
 	PantallaWin pantallaWin;
 	Credits credits;
+	PantallaInstrucciones pantallaInstrucciones;
 	bool keys[256], specialKeys[256]; // Store key states so that 
 	                                  // we can have access at any time
 	int currentScreen;

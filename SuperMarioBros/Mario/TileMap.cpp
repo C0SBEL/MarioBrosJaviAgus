@@ -226,7 +226,7 @@ bool TileMap::collisionMoveUp(const glm::ivec2& pos, const glm::ivec2& size) con
 bool TileMap::isCollision(const int n) const
 {
 	//return n != 4 && n != 17 && n != 18 && n != 19 && n != 25 && n != 26 && n != 27 && n != 9 && n != 10 && n != 11;
-	return n == 1 || n == 2 || n == 3 || n == 42 || n == 44 || n == 45 || n == 52 || n == 53;
+	return n == 1 || n == 2 || n == 3 || n == 42 || n == 44 || n == 45 || n == 52 || n == 53 || n == 57 || n == 58 || n == 59;
 }
 
 bool TileMap::cargarElementos(const string& objectFile) {

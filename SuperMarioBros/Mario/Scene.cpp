@@ -8,7 +8,7 @@
 #define SCREEN_X 0
 #define SCREEN_Y 0
 
-#define INIT_PLAYER_X_TILES 4
+#define INIT_PLAYER_X_TILES 2
 #define INIT_PLAYER_Y_TILES 10
 
 #define INIT_GOOMBA_X_TILES 20
@@ -33,15 +33,15 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-	if(map != NULL)
+	if (map != NULL)
 		delete map;
-	if(player != NULL)
+	if (player != NULL)
 		delete player;
 	if(goomba != NULL)
 		delete goomba;
 	if (koopa != NULL)
 		delete koopa;
-	if (bloque != NULL)
+	/*if (bloque != NULL)
 		delete bloque;
 	if (banner != NULL)
 		delete banner;
@@ -50,7 +50,7 @@ Scene::~Scene()
 	if (pantallaMundo != NULL)
 		delete pantallaMundo;
 	if (pantallaTimeUp != NULL)
-		delete pantallaTimeUp;
+		delete pantallaTimeUp;*/
 }
 
 
@@ -90,7 +90,7 @@ void Scene::restart()
 	finTiempo = false;
 	win = false;
 
-	changeLevel("level01");
+	changeLevel("mundo");
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 	pos_camara = 0;
 	currentTime = 0.0f;
@@ -127,8 +127,10 @@ void Scene::update(int deltaTime)
 		{
 			posBloque = bloque[i].getPos();
 			bool activo = bloque[i].getActivo();
-			if (collisionPlayerEnemy(posMario, tamM, posBloque, glm::ivec2(32, 32)) && activo) {
-				//printf("colision %d ", i);
+			glm::vec2 colMario = posMario+tamM/2.f;
+			glm::vec2 colTamMario = glm::vec2(1, tamM.y/2);
+			if (collisionPlayerEnemy(colMario, colTamMario, posBloque, glm::ivec2(32, 32)) && activo) {
+				printf("colision %d ", i);
 				if (posMario.y > posBloque.y) {
 					printf("Bloque");
 					bloque[i].setHit(estadoMario);
@@ -309,7 +311,7 @@ void Scene::update(int deltaTime)
 	else {
 		if ((2 - int(gameTime / 1000) < 0))
 		{
-			if (pantallaMundo != NULL) changeLevel("level01");
+			if (pantallaMundo != NULL) changeLevel("level02");
 			else if (pantallaTimeUp != NULL) changeLevel("mundo");
 
 			gameTime = 0;
@@ -423,6 +425,12 @@ void Scene::changeLevel(string lvl)
 			world = 1;
 			level = 1;
 			map = TileMap::createTileMap("levels/level01.txt", "levels/objects01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+			player = new Player();
+		}
+		if (lvl == "level02") {
+			world = 1;
+			level = 2;
+			map = TileMap::createTileMap("levels/level02.txt", "levels/objects02.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 			player = new Player();
 		}
 		

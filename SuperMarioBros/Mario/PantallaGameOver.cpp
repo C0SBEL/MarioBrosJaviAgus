@@ -24,13 +24,12 @@ void PantallaGameOver::init() {
 	pantallaGameOver = new Sprite();
 	pantallaGameOver = Sprite::createSprite(glm::ivec2(512, 480), glm::vec2(1.0, 1.0), &spritesheetPantallaMundo, &texProgram);
 
-	text = new Text[6];
+	text = new Text[5];
 	text[0].init(glm::vec2(float(2 * 16), float(3 * 16)), texProgram, 2, 0, "0000000"); //Puntos
 	text[1].init(glm::vec2(float(13 * 16), float(3 * 16)), texProgram, 2, 0, "00"); //Monedas
 	text[2].init(glm::vec2(float(19 * 16), float(3 * 16)), texProgram, 2, 0, "0"); //World
 	text[3].init(glm::vec2(float(21 * 16), float(3 * 16)), texProgram, 2, 0, "0"); //Level
-	text[4].init(glm::vec2(float(5 * 16), float(21 * 16)), texProgram, 2, 0, "PRESS R TO RESTART GAME"); //CAMBIAR POR TECLA ENTER
-	text[5].init(glm::vec2(float(5 * 16), float(23 * 16)), texProgram, 2, 0, "PRESS ESC TO GO TO MENU");
+	text[4].init(glm::vec2(float(5 * 16), float(23 * 16)), texProgram, 2, 0, "PRESS ESC TO GO TO MENU");
 
 	//pantallaGameOver->setPosition(glm::vec2(float(0), float(0)));
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
@@ -42,7 +41,7 @@ void PantallaGameOver::update(int deltaTime) {
 	currentTime += deltaTime;
 
 	pantallaGameOver->update(deltaTime);
-	for (int i = 0; i < 6; ++i) text[i].update(deltaTime);
+	for (int i = 0; i < 5; ++i) text[i].update(deltaTime);
 }
 
 void PantallaGameOver::render() {
@@ -55,7 +54,7 @@ void PantallaGameOver::render() {
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 	pantallaGameOver->render();
-	for (int i = 0; i < 6; ++i) text[i].render();
+	for (int i = 0; i < 5; ++i) text[i].render();
 }
 
 void PantallaGameOver::initShaders()

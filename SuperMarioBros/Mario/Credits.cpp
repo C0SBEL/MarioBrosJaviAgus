@@ -34,7 +34,7 @@ void Credits::init() {
 	text[6].init(glm::vec2(float(6 * 16), float(20 * 16)), texProgram, 1, 0, "ORIGINAL TILESHEET AND SPRITESHEETS FROM"); //320
 	text[7].init(glm::vec2(float(5 * 16), float(22 * 16)), texProgram, 2, 0, "THE SPRITERS RESOURCE"); //336
 
-	text[8].init(glm::vec2(float(4 * 16), float(27 * 16)), texProgram, 2, 1, "PRESS ESC TO GO TO MENU"); //368
+	text[8].init(glm::vec2(float(4 * 16), float(25 * 16)), texProgram, 2, 1, "PRESS ESC TO GO TO MENU"); //368
 
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
 	currentTime = 0.0f;
