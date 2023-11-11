@@ -76,7 +76,7 @@ void Koopa::update(int deltaTime)
 			if (sprite == spritekoopa) {
 				if (sprite->animation() == MOVE_LEFT) {
 					posKoopa.x -= vel;
-					if (map->collisionMoveLeft(posKoopa, tamKoopa) || posKoopa.x <= 0) {
+					if (map->collisionMoveLeft(posKoopa, tamKoopa)) {
 						sprite->changeAnimation(MOVE_RIGHT);
 						posKoopa.x += vel;
 					}
@@ -86,7 +86,7 @@ void Koopa::update(int deltaTime)
 				}
 				else if (sprite->animation() == MOVE_RIGHT) {
 					posKoopa.x += vel;
-					if (map->collisionMoveRight(posKoopa, tamKoopa) || posKoopa.x >= 240 * 32) {
+					if (map->collisionMoveRight(posKoopa, tamKoopa)) {
 						sprite->changeAnimation(MOVE_LEFT);
 						posKoopa.x -= vel;
 					}
@@ -100,7 +100,7 @@ void Koopa::update(int deltaTime)
 				if (left)
 				{
 					posKoopa.x -= vel;
-					if (map->collisionMoveLeft(posKoopa, tamKoopa) || posKoopa.x <= 0)
+					if (map->collisionMoveLeft(posKoopa, tamKoopa))
 					{
 						posKoopa.x += vel;
 						left = false;
@@ -112,7 +112,7 @@ void Koopa::update(int deltaTime)
 				else
 				{
 					posKoopa.x += vel;
-					if (map->collisionMoveRight(posKoopa, tamKoopa) || posKoopa.x >= 240 * 32)
+					if (map->collisionMoveRight(posKoopa, tamKoopa))
 					{
 						posKoopa.x -= vel;
 						left = true;
