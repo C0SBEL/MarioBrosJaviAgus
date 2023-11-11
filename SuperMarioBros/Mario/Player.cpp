@@ -16,14 +16,9 @@
 
 enum PlayerAnims
 {
-	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, JUMP_LEFT, JUMP_RIGHT, BEND_LEFT, BEND_RIGHT, TURN_LEFT, TURN_RIGHT, NONE, DEAD, POLE_LEFT, POLE_RIGHT
+	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, JUMP_LEFT, JUMP_RIGHT, 
+	BEND_LEFT, BEND_RIGHT, TURN_LEFT, TURN_RIGHT, NONE, DEAD, POLE_LEFT, POLE_RIGHT
 };
-
-enum CambioEstadoAnims
-{
-	MARIO_SUPERMARIO_LEFT, MARIO_SUPERMARIO_RIGHT, SUPERMARIO_MARIO_LEFT, SUPERMARIO_MARIO_RIGHT
-};
-
 
 void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 {
@@ -40,6 +35,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	renderizar = true;
 	mastil = false;
 	win = false;
+	starMario = false;
 	aux = 0;
 	finivel = false;
 
@@ -144,8 +140,176 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	supermario->setAnimationSpeed(NONE, 8);
 	supermario->addKeyframe(NONE, glm::vec2(tamSM*8, 0.f));
 
+	//STARMARIO
+	double tamSm = 0.1;
+	double tamMY = 0.125f;
+	spritesheetStarMario.loadFromFile("images/StarMario.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	starmario = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(tamSm, tamMY), &spritesheetStarMario, &shaderProgram);
+	starmario->setNumberAnimations(14);
+
+	starmario->setAnimationSpeed(STAND_LEFT, 8);
+	starmario->addKeyframe(STAND_LEFT, glm::vec2(tamSm * 0, tamMY * 1));
+	starmario->addKeyframe(STAND_LEFT, glm::vec2(tamSm * 0, tamMY * 3));
+	starmario->addKeyframe(STAND_LEFT, glm::vec2(tamSm * 0, tamMY * 5));
+
+	starmario->setAnimationSpeed(STAND_RIGHT, 8);
+	starmario->addKeyframe(STAND_RIGHT, glm::vec2(tamSm * 0, tamMY * 0));
+	starmario->addKeyframe(STAND_RIGHT, glm::vec2(tamSm * 0, tamMY * 2));
+	starmario->addKeyframe(STAND_RIGHT, glm::vec2(tamSm * 0, tamMY * 4));
+
+	starmario->setAnimationSpeed(MOVE_LEFT, 8);
+	starmario->addKeyframe(MOVE_LEFT, glm::vec2(tamSm * 1, tamMY * 1));
+	starmario->addKeyframe(MOVE_LEFT, glm::vec2(tamSm * 2, tamMY * 1));
+	starmario->addKeyframe(MOVE_LEFT, glm::vec2(tamSm * 3, tamMY * 1));
+	starmario->addKeyframe(MOVE_LEFT, glm::vec2(tamSm * 1, tamMY * 3));
+	starmario->addKeyframe(MOVE_LEFT, glm::vec2(tamSm * 2, tamMY * 3));
+	starmario->addKeyframe(MOVE_LEFT, glm::vec2(tamSm * 3, tamMY * 3));
+	starmario->addKeyframe(MOVE_LEFT, glm::vec2(tamSm * 1, tamMY * 5));
+	starmario->addKeyframe(MOVE_LEFT, glm::vec2(tamSm * 2, tamMY * 5));
+	starmario->addKeyframe(MOVE_LEFT, glm::vec2(tamSm * 3, tamMY * 5));
+
+	starmario->setAnimationSpeed(MOVE_RIGHT, 8);
+	starmario->addKeyframe(MOVE_RIGHT, glm::vec2(tamSm * 1, tamMY * 0));
+	starmario->addKeyframe(MOVE_RIGHT, glm::vec2(tamSm * 2, tamMY * 0));
+	starmario->addKeyframe(MOVE_RIGHT, glm::vec2(tamSm * 3, tamMY * 0));
+	starmario->addKeyframe(MOVE_RIGHT, glm::vec2(tamSm * 1, tamMY * 2));
+	starmario->addKeyframe(MOVE_RIGHT, glm::vec2(tamSm * 2, tamMY * 2));
+	starmario->addKeyframe(MOVE_RIGHT, glm::vec2(tamSm * 3, tamMY * 2));
+	starmario->addKeyframe(MOVE_RIGHT, glm::vec2(tamSm * 1, tamMY * 4));
+	starmario->addKeyframe(MOVE_RIGHT, glm::vec2(tamSm * 2, tamMY * 4));
+	starmario->addKeyframe(MOVE_RIGHT, glm::vec2(tamSm * 3, tamMY * 4));
+
+	starmario->setAnimationSpeed(JUMP_LEFT, 8);
+	starmario->addKeyframe(JUMP_LEFT, glm::vec2(tamSm * 5, tamMY * 1));
+	starmario->addKeyframe(JUMP_LEFT, glm::vec2(tamSm * 5, tamMY * 3));
+	starmario->addKeyframe(JUMP_LEFT, glm::vec2(tamSm * 5, tamMY * 5));
+
+	starmario->setAnimationSpeed(JUMP_RIGHT, 8);
+	starmario->addKeyframe(JUMP_RIGHT, glm::vec2(tamSm * 5, tamMY * 0));
+	starmario->addKeyframe(JUMP_RIGHT, glm::vec2(tamSm * 5, tamMY * 2));
+	starmario->addKeyframe(JUMP_RIGHT, glm::vec2(tamSm * 5, tamMY * 4));
+
+	starmario->setAnimationSpeed(BEND_LEFT, 8);
+	starmario->addKeyframe(BEND_LEFT, glm::vec2(tamSm * 0, tamMY * 1));
+	starmario->addKeyframe(BEND_LEFT, glm::vec2(tamSm * 0, tamMY * 3));
+	starmario->addKeyframe(BEND_LEFT, glm::vec2(tamSm * 0, tamMY * 5));
+
+	starmario->setAnimationSpeed(BEND_RIGHT, 8);
+	starmario->addKeyframe(BEND_RIGHT, glm::vec2(tamSm * 0, tamMY * 0));
+	starmario->addKeyframe(BEND_RIGHT, glm::vec2(tamSm * 0, tamMY * 2));
+	starmario->addKeyframe(BEND_RIGHT, glm::vec2(tamSm * 0, tamMY * 4));
+
+	starmario->setAnimationSpeed(TURN_LEFT, 8);
+	starmario->addKeyframe(TURN_LEFT, glm::vec2(tamSm * 4, tamMY * 1));
+	starmario->addKeyframe(TURN_LEFT, glm::vec2(tamSm * 4, tamMY * 3));
+	starmario->addKeyframe(TURN_LEFT, glm::vec2(tamSm * 4, tamMY * 5));
+
+	starmario->setAnimationSpeed(TURN_RIGHT, 8);
+	starmario->addKeyframe(TURN_RIGHT, glm::vec2(tamSm * 4, tamMY * 0));
+	starmario->addKeyframe(TURN_RIGHT, glm::vec2(tamSm * 4, tamMY * 2));
+	starmario->addKeyframe(TURN_RIGHT, glm::vec2(tamSm * 4, tamMY * 4));
+
+	starmario->setAnimationSpeed(POLE_LEFT, 8);
+	starmario->addKeyframe(POLE_LEFT, glm::vec2(tamSm * 7, tamMY * 1));
+	starmario->addKeyframe(POLE_LEFT, glm::vec2(tamSm * 7, tamMY * 3));
+	starmario->addKeyframe(POLE_LEFT, glm::vec2(tamSm * 7, tamMY * 5));
+
+	starmario->setAnimationSpeed(POLE_RIGHT, 8);
+	starmario->addKeyframe(POLE_RIGHT, glm::vec2(tamSm * 7, tamMY * 0));
+	starmario->addKeyframe(POLE_RIGHT, glm::vec2(tamSm * 7, tamMY * 2));
+	starmario->addKeyframe(POLE_RIGHT, glm::vec2(tamSm * 7, tamMY * 4));
+
+	starmario->setAnimationSpeed(NONE, 8);
+	starmario->addKeyframe(NONE, glm::vec2(tamSm * 8, tamMY));
+
+	starmario->setAnimationSpeed(DEAD, 8);
+	starmario->addKeyframe(DEAD, glm::vec2(tamSm * 6, tamMY));
+
+	//STAR SUPER MARIO
+	tamSM = 0.1;
+	spritesheetStarSuperMario.loadFromFile("images/StarSuperMario.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	starsupermario = Sprite::createSprite(glm::ivec2(32, 64), glm::vec2(tamSM, tamMY), &spritesheetStarSuperMario, &shaderProgram);
+	starsupermario->setNumberAnimations(13);
+
+	starsupermario->setAnimationSpeed(STAND_LEFT, 8);
+	starsupermario->addKeyframe(STAND_LEFT, glm::vec2(tamSM * 0, tamMY * 1));
+	starsupermario->addKeyframe(STAND_LEFT, glm::vec2(tamSM * 0, tamMY * 3));
+	starsupermario->addKeyframe(STAND_LEFT, glm::vec2(tamSM * 0, tamMY * 5));
+
+	starsupermario->setAnimationSpeed(STAND_RIGHT, 8);
+	starsupermario->addKeyframe(STAND_RIGHT, glm::vec2(tamSM * 0, tamMY * 0));
+	starsupermario->addKeyframe(STAND_RIGHT, glm::vec2(tamSM * 0, tamMY * 2));
+	starsupermario->addKeyframe(STAND_RIGHT, glm::vec2(tamSM * 0, tamMY * 4));
+
+	starsupermario->setAnimationSpeed(MOVE_LEFT, 8);
+	starsupermario->addKeyframe(MOVE_LEFT, glm::vec2(tamSM * 1, tamMY * 1));
+	starsupermario->addKeyframe(MOVE_LEFT, glm::vec2(tamSM * 2, tamMY * 1));
+	starsupermario->addKeyframe(MOVE_LEFT, glm::vec2(tamSM * 3, tamMY * 1));
+	starsupermario->addKeyframe(MOVE_LEFT, glm::vec2(tamSM * 1, tamMY * 3));
+	starsupermario->addKeyframe(MOVE_LEFT, glm::vec2(tamSM * 2, tamMY * 3));
+	starsupermario->addKeyframe(MOVE_LEFT, glm::vec2(tamSM * 3, tamMY * 3));
+	starsupermario->addKeyframe(MOVE_LEFT, glm::vec2(tamSM * 1, tamMY * 5));
+	starsupermario->addKeyframe(MOVE_LEFT, glm::vec2(tamSM * 2, tamMY * 5));
+	starsupermario->addKeyframe(MOVE_LEFT, glm::vec2(tamSM * 3, tamMY * 5));
+
+	starsupermario->setAnimationSpeed(MOVE_RIGHT, 8);
+	starsupermario->addKeyframe(MOVE_RIGHT, glm::vec2(tamSM * 1, tamMY * 0));
+	starsupermario->addKeyframe(MOVE_RIGHT, glm::vec2(tamSM * 2, tamMY * 0));
+	starsupermario->addKeyframe(MOVE_RIGHT, glm::vec2(tamSM * 3, tamMY * 0));
+	starsupermario->addKeyframe(MOVE_RIGHT, glm::vec2(tamSM * 1, tamMY * 2));
+	starsupermario->addKeyframe(MOVE_RIGHT, glm::vec2(tamSM * 2, tamMY * 2));
+	starsupermario->addKeyframe(MOVE_RIGHT, glm::vec2(tamSM * 3, tamMY * 2));
+	starsupermario->addKeyframe(MOVE_RIGHT, glm::vec2(tamSM * 1, tamMY * 4));
+	starsupermario->addKeyframe(MOVE_RIGHT, glm::vec2(tamSM * 2, tamMY * 4));
+	starsupermario->addKeyframe(MOVE_RIGHT, glm::vec2(tamSM * 3, tamMY * 4));
+
+	starsupermario->setAnimationSpeed(JUMP_LEFT, 8);
+	starsupermario->addKeyframe(JUMP_LEFT, glm::vec2(tamSM * 5, tamMY * 1));
+	starsupermario->addKeyframe(JUMP_LEFT, glm::vec2(tamSM * 5, tamMY * 3));
+	starsupermario->addKeyframe(JUMP_LEFT, glm::vec2(tamSM * 5, tamMY * 5));
+
+	starsupermario->setAnimationSpeed(JUMP_RIGHT, 8);
+	starsupermario->addKeyframe(JUMP_RIGHT, glm::vec2(tamSM * 5, tamMY * 0));
+	starsupermario->addKeyframe(JUMP_RIGHT, glm::vec2(tamSM * 5, tamMY * 2));
+	starsupermario->addKeyframe(JUMP_RIGHT, glm::vec2(tamSM * 5, tamMY * 4));
+
+	starsupermario->setAnimationSpeed(BEND_LEFT, 8);
+	starsupermario->addKeyframe(BEND_LEFT, glm::vec2(tamSM * 6, tamMY * 1));
+	starsupermario->addKeyframe(BEND_LEFT, glm::vec2(tamSM * 6, tamMY * 3));
+	starsupermario->addKeyframe(BEND_LEFT, glm::vec2(tamSM * 6, tamMY * 5));
+
+	starsupermario->setAnimationSpeed(BEND_RIGHT, 8);
+	starsupermario->addKeyframe(BEND_RIGHT, glm::vec2(tamSM * 6, tamMY * 0));
+	starsupermario->addKeyframe(BEND_RIGHT, glm::vec2(tamSM * 6, tamMY * 2));
+	starsupermario->addKeyframe(BEND_RIGHT, glm::vec2(tamSM * 6, tamMY * 4));
+
+	starsupermario->setAnimationSpeed(TURN_LEFT, 8);
+	starsupermario->addKeyframe(TURN_LEFT, glm::vec2(tamSM * 4, tamMY * 1));
+	starsupermario->addKeyframe(TURN_LEFT, glm::vec2(tamSM * 4, tamMY * 3));
+	starsupermario->addKeyframe(TURN_LEFT, glm::vec2(tamSM * 4, tamMY * 5));
+
+	starsupermario->setAnimationSpeed(TURN_RIGHT, 8);
+	starsupermario->addKeyframe(TURN_RIGHT, glm::vec2(tamSM * 4, tamMY * 0));
+	starsupermario->addKeyframe(TURN_RIGHT, glm::vec2(tamSM * 4, tamMY * 2));
+	starsupermario->addKeyframe(TURN_RIGHT, glm::vec2(tamSM * 4, tamMY * 4));
+
+	starsupermario->setAnimationSpeed(POLE_RIGHT, 8);
+	starsupermario->addKeyframe(POLE_RIGHT, glm::vec2(tamSM * 7, tamMY * 0));
+	starsupermario->addKeyframe(POLE_RIGHT, glm::vec2(tamSM * 7, tamMY * 2));
+	starsupermario->addKeyframe(POLE_RIGHT, glm::vec2(tamSM * 7, tamMY * 4));
+
+	starsupermario->setAnimationSpeed(POLE_LEFT, 8);
+	starsupermario->addKeyframe(POLE_LEFT, glm::vec2(tamSM * 7, tamMY * 1));
+	starsupermario->addKeyframe(POLE_LEFT, glm::vec2(tamSM * 7, tamMY * 3));
+	starsupermario->addKeyframe(POLE_LEFT, glm::vec2(tamSM * 7, tamMY * 4));
+
+	starsupermario->setAnimationSpeed(NONE, 8);
+	starsupermario->addKeyframe(NONE, glm::vec2(tamSM * 8, tamMY * 0));
+
 	mario->changeAnimation(STAND_RIGHT);
 	supermario->changeAnimation(NONE);
+	starmario->changeAnimation(NONE);
+	starsupermario->changeAnimation(NONE);
 	sprite = mario;
 	tamPlayer = glm::ivec2(32, 32); //Tamaño Mario
 
@@ -184,20 +348,6 @@ void Player::update(int deltaTime, float poscam)
 			//Animación aterrizaje salto (JUMP_X --> STAND_X)
 			if (!bJumping && sprite->animation() == JUMP_LEFT) sprite->changeAnimation(STAND_LEFT);
 			if (!bJumping && sprite->animation() == JUMP_RIGHT) sprite->changeAnimation(STAND_RIGHT);
-
-			//Cambio manual de estado (Mario <--> Super Mario)
-			if (Game::instance().getKey('m') || Game::instance().getKey('M'))
-			{
-				if (sprite != mario) {
-					setSprite("mario");
-				}
-				else {
-					setSprite("supermario");
-				}
-
-				Game::instance().keyReleased('M');
-				Game::instance().keyReleased('m');
-			}
 
 			//Control aceleración
 			if (Game::instance().getKey('r') || Game::instance().getKey('R'))
@@ -377,19 +527,54 @@ void Player::setPosition(const glm::vec2 &pos)
 void Player::setSprite(string tipoMario)
 {
 	if (tipoMario == "mario") {
+		starMario = false;
 		mario->changeAnimation(sprite->animation());
 		supermario->changeAnimation(NONE);
+		starmario->changeAnimation(NONE);
+		starsupermario->changeAnimation(NONE);
+
 		mario->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 		sprite = mario;
 		tamPlayer = glm::ivec2(32, 32); //Tamaño Mario
 	}
-	else
+	else if (tipoMario == "supermario")
 	{
+		starMario = false;
 		supermario->changeAnimation(sprite->animation());
 		mario->changeAnimation(NONE);
+		starmario->changeAnimation(NONE);
+		starsupermario->changeAnimation(NONE);
+
 		posPlayer.y -= 32; //POSIBLE CAUSA DE ERRORES???
 		supermario->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 		sprite = supermario;
+		tamPlayer = glm::ivec2(32, 64); //Tamaño Super Mario
+	}
+	else if (tipoMario == "starmario") 
+	{
+		starMario = true;
+		timeStar = 0;
+		starmario->changeAnimation(sprite->animation());
+		mario->changeAnimation(NONE);
+		supermario->changeAnimation(NONE);
+		starsupermario->changeAnimation(NONE);
+
+		starmario->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
+		sprite = starmario;
+		tamPlayer = glm::ivec2(32, 32); //Tamaño Mario
+	}
+	else if (tipoMario == "starsupermario") 
+	{
+		starMario = true;
+		timeStar = 0;
+		starsupermario->changeAnimation(sprite->animation());
+		mario->changeAnimation(NONE);
+		starmario->changeAnimation(NONE);
+		supermario->changeAnimation(NONE);
+
+		posPlayer.y -= 32; //POSIBLE CAUSA DE ERRORES???
+		starsupermario->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
+		sprite = starsupermario;
 		tamPlayer = glm::ivec2(32, 64); //Tamaño Super Mario
 	}
 }
@@ -413,6 +598,8 @@ string Player::getEstado() const
 {
 	if (sprite == mario) return "MARIO";
 	else if (sprite == supermario) return "SUPERMARIO";
+	else if (sprite == starmario) return "STARMARIO";
+	else if (sprite == starsupermario) return "STARSUPERMARIO";
 }
 
 void Player::setBloque(string d, const glm::vec2 &posB) 
@@ -466,8 +653,13 @@ void Player::cambiaEstado(string ea, string ep) {
 		setSprite("mario");
 		inmunidad = true;
 	}
-	//else if (e == "SUPERMARIO") sprite = supermario;
-	//else starmario
+	else if (ea == "MARIO" && ep == "SUPERMARIO") setSprite("supermario");
+	else if (ea == "MARIO" && ep == "STARMARIO") setSprite("starmario");
+	else if (ea == "SUPERMARIO" && ep == "STARSUPERMARIO") setSprite("starsupermario");
+	else if (ea == "STARMARIO" && ep == "MARIO") setSprite("mario");
+	else if (ea == "STARSUPERMARIO" && ep == "SUPERMARIO") setSprite("supermario");
+	else if (ea == "STARMARIO" && ep == "STARSUPERMARIO") setSprite("starsupermario");
+	else if (ea == "STARSUPERMARIO" && ep == "STARMARIO") setSprite("starmario");
 }
 
 bool Player::esInmune() {

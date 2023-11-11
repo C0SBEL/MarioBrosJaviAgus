@@ -121,6 +121,44 @@ void Scene::update(int deltaTime)
 		estadoMario = player->getEstado();
 		inmunidadMario = player->esInmune();
 	}
+
+	//ATAJOS
+	if (player != NULL) {
+		string estado = player->getEstado();
+		if (Game::instance().getKey('m') || Game::instance().getKey('M'))
+		{
+			if (estado == "SUPERMARIO") player->cambiaEstado("SUPERMARIO", "MARIO");
+			else if (estado == "MARIO") player->cambiaEstado("MARIO", "SUPERMARIO");
+			else if (estado == "STARSUPERMARIO") player->cambiaEstado("STARSUPERMARIO", "STARMARIO");
+			else if (estado == "STARMARIO") player->cambiaEstado("STARMARIO", "STARSUPERMARIO");
+
+			Game::instance().keyReleased('M');
+			Game::instance().keyReleased('m');
+		}
+
+		if (Game::instance().getKey('g') || Game::instance().getKey('G'))
+		{
+			if (estado == "SUPERMARIO") player->cambiaEstado("SUPERMARIO", "STARSUPERMARIO");
+			else if (estado == "MARIO") player->cambiaEstado("MARIO", "STARMARIO");
+			else if (estado == "STARSUPERMARIO") player->cambiaEstado("STARSUPERMARIO", "SUPERMARIO");
+			else if (estado == "STARMARIO") player->cambiaEstado("STARMARIO", "MARIO");
+
+			Game::instance().keyReleased('G');
+			Game::instance().keyReleased('g');
+		}
+	}
+	if (Game::instance().getKey('1'))
+	{
+		level = 1;
+		changeLevel("mundo");
+		Game::instance().keyReleased('1');
+	}
+	if (Game::instance().getKey('2'))
+	{
+		level = 2;
+		changeLevel("mundo");
+		Game::instance().keyReleased('2');
+	}
 	
 	//BLOQUES
 	if (bloque != NULL)
@@ -154,7 +192,7 @@ void Scene::update(int deltaTime)
 	{
 		glm::vec2 posMoneda;
 		bool not_collision = true;
-		for (int i = 0; i < numMoneda && not_collision; ++i)
+		for (int i = 0; i < numMoneda; ++i)
 		{
 			posMoneda = moneda[i].getPos();
 			bool activo = moneda[i].getActivo();
@@ -182,17 +220,48 @@ void Scene::update(int deltaTime)
 	if (powerUp != NULL)
 	{
 		glm::vec2 posPowerUp;
-		bool not_collision = true;
-		for (int i = 0; i < numPowerUp && not_collision; ++i)
+		for (int i = 0; i < numPowerUp; ++i)
 		{
+			//POWERUP - MARIO
 			posPowerUp = powerUp[i].getPos();
-			bool activo = powerUp[i].getActivo();
+			bool powerUpActivo = powerUp[i].getActivo();
+			bool fueraBloque = powerUp[i].getFueraBloque();
 			glm::vec2 colMario = posMario + glm::vec2(tamM.x / 2.f, 0.0f);
 			glm::vec2 colTamMario = glm::vec2(1.f, tamM.y);
-			if (collisionPlayerEnemy(colMario, colTamMario, posPowerUp, glm::ivec2(32, 32)) && activo) {
-				if (posMario.y >= posPowerUp.y) {
+			if (collisionPlayerEnemy(colMario, colTamMario, posPowerUp, glm::ivec2(32, 32)) && powerUpActivo) {
+				if (posMario.y >= posPowerUp.y && !fueraBloque) {
 					printf("PowerUp");
-					powerUp[i].setHit();
+					powerUp[i].setHit("MARIO", posMario);
+				}
+				else {
+					string tipo = powerUp[i].getTipo();
+					string estadoMario = player->getEstado();
+					powerUp[i].setDesactivar();
+
+					if (tipo == "SETA") {
+						puntosMario += 1000;
+						if (estadoMario == "MARIO") player->cambiaEstado("MARIO", "SUPERMARIO");
+					}
+					else {
+						puntosMario += 1500;
+						if (estadoMario == "MARIO") player->cambiaEstado("MARIO", "STARMARIO");
+						else if (estadoMario == "SUPERMARIO") player->cambiaEstado("SUPERMARIO", "STARMARIO");
+					}
+				}
+			}
+
+			//POWERUP - BLOQUE
+			glm::vec2 posBloque;
+			bool not_collision = true;
+
+			if (fueraBloque) {
+				for (int j = 0; j < numBloque && not_collision; ++j) {
+					posBloque = bloque[j].getPos();
+					bool bloqueActivo = bloque[j].getActivo();
+					if (collisionPlayerEnemy(glm::vec2(posPowerUp.x, posPowerUp.y + 2), glm::ivec2(32, 32), posBloque, glm::ivec2(32, 32)) && powerUpActivo && bloqueActivo) {
+						powerUp[i].setHit("DOWN", posBloque);
+						not_collision = false;
+					}
 				}
 			}
 		}
@@ -451,6 +520,7 @@ void Scene::changeLevel(string lvl)
 	koopa = NULL;
 	bloque = NULL;
 	moneda = NULL;
+	powerUp = NULL;
 	pantallaMundo = NULL;
 	pantallaTimeUp = NULL;
 	numKoopa = 0;
@@ -570,7 +640,7 @@ void Scene::changeLevel(string lvl)
 			powerUp = new PowerUp[numPowerUp];
 			for (int i = 0; i < numPowerUp; ++i)
 			{
-				powerUp[i].init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+				powerUp[i].init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, "SETA");
 				powerUp[i].setPosition(glm::vec2((posSetas[i].first /* + 0.25f */ )* map->getTileSize(), posSetas[i].second* map->getTileSize()));
 				powerUp[i].setTileMap(map);
 			}

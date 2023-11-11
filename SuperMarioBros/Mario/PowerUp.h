@@ -8,7 +8,7 @@
 class PowerUp
 {
 public:
-	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram);
+	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, string tipoPowerUp);
 	void update(int deltaTime);
 	void render();
 
@@ -17,7 +17,10 @@ public:
 
 	glm::vec2 getPos() const;
 	bool getActivo() const;
-	void setHit();
+	bool getFueraBloque() const;
+	void setHit(string d, const glm::vec2& posB);
+	void setDesactivar();
+	string getTipo();
 
 
 private:
@@ -26,8 +29,9 @@ private:
 	Sprite* mushroom, *sprite, *star;
 	TileMap* map;
 
-	int time;
-	bool hit, activado;
+	int time, movePowerUp;
+	bool hit, activado, fueraBloque;
+	string tipoPowerUp;
 };
 
 #endif 
