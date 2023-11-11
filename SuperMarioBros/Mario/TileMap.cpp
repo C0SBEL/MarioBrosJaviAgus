@@ -101,6 +101,169 @@ bool TileMap::loadLevel(const string &levelFile)
 	return true;
 }
 
+bool TileMap::cargarElementos(const string& objectFile) {
+	ifstream fin;
+	string line;
+	stringstream sstream;
+
+	fin.open(objectFile.c_str());
+	if (!fin.is_open())
+		return false;
+	getline(fin, line);
+	if (line.compare(0, 6, "GOOMBA") != 0)
+		return false;
+	getline(fin, line);
+	sstream.str(line);
+	int numG;
+	sstream >> numG;
+	posGoombas = vector<pair<int, int>>(numG);
+
+	sstream.clear();  // Clear the error state of the stringstream
+	sstream.seekg(0); // Reset the stream position to the beginning of the line
+
+	getline(fin, line);
+	sstream.str(line);
+	for (int i = 0; i < numG; ++i) {
+		pair<int, int> aux;
+		sstream >> aux.first >> aux.second;
+		posGoombas[i] = aux;
+	}
+
+	sstream.clear();
+	sstream.seekg(0);
+
+	//Posiciones Koopas
+	getline(fin, line);
+	if (line.compare(0, 5, "KOOPA") != 0)
+		return false;
+	getline(fin, line);
+	sstream.str(line);
+	int numK;
+	sstream >> numK;
+	posKoopas = vector<pair<int, int>>(numK);
+
+	sstream.clear();
+	sstream.seekg(0);
+
+	getline(fin, line);
+	sstream.str(line);
+	for (int i = 0; i < numK; ++i) {
+		pair<int, int> aux;
+		sstream >> aux.first >> aux.second;
+		posKoopas[i] = aux;
+	}
+
+	sstream.clear();
+	sstream.seekg(0);
+
+	//Posiciones Bloque ?
+	getline(fin, line);
+	if (line.compare(0, 12, "INTERROGANTE") != 0)
+		return false;
+	getline(fin, line);
+	sstream.str(line);
+	int numI;
+	sstream >> numI;
+	posInterrogantes = vector<pair<int, int>>(numI);
+
+	sstream.clear();
+	sstream.seekg(0);
+
+	getline(fin, line);
+	sstream.str(line);
+	for (int i = 0; i < numI; ++i) {
+		pair<int, int> aux;
+		sstream >> aux.first >> aux.second;
+		posInterrogantes[i] = aux;
+	}
+
+	sstream.clear();
+	sstream.seekg(0);
+
+	//Posiciones Bloque Ladrillo
+	getline(fin, line);
+	if (line.compare(0, 8, "LADRILLO") != 0)
+		return false;
+	getline(fin, line);
+	sstream.str(line);
+	int numL;
+	sstream >> numL;
+	posLadrillos = vector<pair<int, int>>(numL);
+
+	sstream.clear();
+	sstream.seekg(0);
+
+	getline(fin, line);
+	sstream.str(line);
+	for (int i = 0; i < numL; ++i) {
+		pair<int, int> aux;
+		sstream >> aux.first >> aux.second;
+		posLadrillos[i] = aux;
+	}
+
+	sstream.clear();
+	sstream.seekg(0);
+
+	//Posiciones Monedas
+	getline(fin, line);
+	if (line.compare(0, 8, "MONEDA") != 0)
+		return false;
+	getline(fin, line);
+	sstream.str(line);
+	int numM;
+	sstream >> numM;
+	posMonedas = vector<pair<int, int>>(numM);
+
+	sstream.clear();
+	sstream.seekg(0);
+
+	getline(fin, line);
+	sstream.str(line);
+	for (int i = 0; i < numM; ++i) {
+		pair<int, int> aux;
+		sstream >> aux.first >> aux.second;
+		posMonedas[i] = aux;
+	}
+
+	sstream.clear();
+	sstream.seekg(0);
+
+	//Posiciones Monedas
+	getline(fin, line);
+	if (line.compare(0, 8, "SETA") != 0)
+		return false;
+	getline(fin, line);
+	sstream.str(line);
+	int numS;
+	sstream >> numS;
+	posSetas = vector<pair<int, int>>(numS);
+
+	sstream.clear();
+	sstream.seekg(0);
+
+	getline(fin, line);
+	sstream.str(line);
+	for (int i = 0; i < numS; ++i) {
+		pair<int, int> aux;
+		sstream >> aux.first >> aux.second;
+		posSetas[i] = aux;
+	}
+
+	fin.close();
+
+	return true;
+}
+
+vector<pair<int, int>> TileMap::getPosObj(string n)
+{
+	if (n == "GOOMBAS") return posGoombas;
+	else if (n == "KOOPAS") return posKoopas;
+	else if (n == "INTERROGANTES") return posInterrogantes;
+	else if (n == "LADRILLOS") return posLadrillos;
+	else if (n == "MONEDAS") return posMonedas;
+	else if (n == "SETAS") return posSetas;
+}
+
 void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
 {
 	int tile;
@@ -229,140 +392,13 @@ bool TileMap::isCollision(const int n) const
 	return n == 1 || n == 2 || n == 3 || n == 42 || n == 44 || n == 45 || n == 52 || n == 53 || n == 57 || n == 58 || n == 59;
 }
 
-bool TileMap::cargarElementos(const string& objectFile) {
-	ifstream fin;
-	string line;
-	stringstream sstream;
+bool TileMap::collisionMastil(const glm::ivec2& pos, const glm::ivec2& size) const {
 
-	fin.open(objectFile.c_str());
-	if (!fin.is_open())
-		return false;
-	getline(fin, line);
-	if (line.compare(0, 6, "GOOMBA") != 0)
-		return false;
-	getline(fin, line);
-	sstream.str(line);
-	int numG;
-	sstream >> numG;
-	posGoombas = vector<pair<int, int>>(numG);
+	int mastil[] = {43, 51};
+	int x, y;
 
-	sstream.clear();  // Clear the error state of the stringstream
-	sstream.seekg(0); // Reset the stream position to the beginning of the line
+	x = (pos.x + size.x / 2 + 4) / tileSize;
+	y = (pos.y + size.y - 1) / tileSize;
 
-	getline(fin, line);
-	sstream.str(line);
-	for (int i = 0; i < numG; ++i) {
-		pair<int, int> aux;
-		sstream >> aux.first >> aux.second;
-		posGoombas[i] = aux;
-	}
-
-	sstream.clear(); 
-	sstream.seekg(0);
-
-	//Posiciones Koopas
-	getline(fin, line);
-	if (line.compare(0, 5, "KOOPA") != 0)
-		return false;
-	getline(fin, line);
-	sstream.str(line);
-	int numK;
-	sstream >> numK;
-	posKoopas = vector<pair<int, int>>(numK);
-
-	sstream.clear();  
-	sstream.seekg(0); 
-
-	getline(fin, line);
-	sstream.str(line);
-	for (int i = 0; i < numK; ++i) {
-		pair<int, int> aux;
-		sstream >> aux.first >> aux.second;
-		posKoopas[i] = aux;
-	}
-
-	sstream.clear();  
-	sstream.seekg(0); 
-
-	//Posiciones Bloque ?
-	getline(fin, line);
-	if (line.compare(0, 12, "INTERROGANTE") != 0)
-		return false;
-	getline(fin, line);
-	sstream.str(line);
-	int numI;
-	sstream >> numI;
-	posInterrogantes = vector<pair<int, int>>(numI);
-
-	sstream.clear();
-	sstream.seekg(0);
-
-	getline(fin, line);
-	sstream.str(line);
-	for (int i = 0; i < numI; ++i) {
-		pair<int, int> aux;
-		sstream >> aux.first >> aux.second;
-		posInterrogantes[i] = aux;
-	}
-
-	sstream.clear();
-	sstream.seekg(0);
-
-	//Posiciones Bloque Ladrillo
-	getline(fin, line);
-	if (line.compare(0, 8, "LADRILLO") != 0)
-		return false;
-	getline(fin, line);
-	sstream.str(line);
-	int numL;
-	sstream >> numL;
-	posLadrillos = vector<pair<int, int>>(numL);
-
-	sstream.clear();
-	sstream.seekg(0);
-
-	getline(fin, line);
-	sstream.str(line);
-	for (int i = 0; i < numL; ++i) {
-		pair<int, int> aux;
-		sstream >> aux.first >> aux.second;
-		posLadrillos[i] = aux;
-	}
-
-	sstream.clear();
-	sstream.seekg(0);
-
-	//Posiciones Monedas
-	getline(fin, line);
-	if (line.compare(0, 8, "MONEDA") != 0)
-		return false;
-	getline(fin, line);
-	sstream.str(line);
-	int numM;
-	sstream >> numM;
-	posMonedas = vector<pair<int, int>>(numM);
-
-	sstream.clear();
-	sstream.seekg(0);
-
-	getline(fin, line);
-	sstream.str(line);
-	for (int i = 0; i < numM; ++i) {
-		pair<int, int> aux;
-		sstream >> aux.first >> aux.second;
-		posMonedas[i] = aux;
-	}
-
-	fin.close();
-
-	return true;
-}
-
-vector<pair<int, int>> TileMap::getPosObj(string n) 
-{
-	if (n == "GOOMBAS") return posGoombas;
-	else if (n == "KOOPAS") return posKoopas;
-	else if (n == "INTERROGANTES") return posInterrogantes;
-	else if (n == "LADRILLOS") return posLadrillos;
-	else if (n == "MONEDAS") return posMonedas;
+	return (map[y * mapSize.x + x] == 43 || map[y * mapSize.x + x] == 51);
 }

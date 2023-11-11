@@ -39,6 +39,7 @@ public:
 
 	bool cargarElementos(const string& objectFile);
 	vector<pair<int, int>> getPosObj(string n);
+	bool collisionMastil(const glm::ivec2& pos, const glm::ivec2& size) const;
 
 private:
 	bool loadLevel(const string &levelFile);
@@ -54,7 +55,7 @@ private:
 	Texture tilesheet;
 	glm::vec2 tileTexSize;
 	int *map;
-	vector<pair<int, int>> posGoombas, posKoopas, posLadrillos, posInterrogantes, posMonedas;
+	vector<pair<int, int>> posGoombas, posKoopas, posLadrillos, posInterrogantes, posMonedas, posSetas;;
 
 };
 

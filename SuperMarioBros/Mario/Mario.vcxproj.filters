@@ -60,6 +60,30 @@
     <ClInclude Include="Banner.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="Moneda.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="PantallaMundo.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="PantallaTimeUp.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="PantallaGameOver.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="PantallaInicial.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Credits.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="PantallaWin.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="PantallaInstrucciones.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -105,6 +129,30 @@
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
     <ClCompile Include="Banner.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Moneda.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="PantallaMundo.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="PantallaTimeUp.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="PantallaGameOver.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="PantallaInicial.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Credits.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="PantallaWin.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="PantallaInstrucciones.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
   </ItemGroup>
@@ -157,6 +205,27 @@
     <Image Include="images\BloqueLadrillo.png">
       <Filter>Archivos de recursos</Filter>
     </Image>
+    <Image Include="images\Moneda.png">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
+    <Image Include="images\PantallaMundo.png">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
+    <Image Include="images\PantallaGameOver.png">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
+    <Image Include="images\PantallaTimeUp.png">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
+    <Image Include="images\PantallaInicial.png">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
+    <Image Include="images\MonedaBanner.png">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
+    <Image Include="images\tipografia_red.png">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="Debug\freeglut.dll" />
@@ -164,8 +233,19 @@
     <None Include="Debug\glew32.dll" />
     <None Include="levels\agus.tsx" />
     <None Include="levels\world1.tmx" />
+    <None Include="shaders\simple.frag" />
+    <None Include="shaders\texture.frag" />
+    <None Include="shaders\simple.vert" />
+    <None Include="shaders\texture.vert" />
+    <None Include="Debug\Mario.exe.recipe" />
+    <None Include="Debug\Mario.tlog\unsuccessfulbuild" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="levels\level01.txt" />
+    <Text Include="levels\objects01.txt" />
+    <Text Include="Debug\Mario.Build.CppClean.log" />
+    <Text Include="Debug\Mario.log" />
+    <Text Include="Debug\Mario.vcxproj.FileListAbsolute.txt" />
+    <Text Include="levels\level02.txt" />
   </ItemGroup>
 </Project>
