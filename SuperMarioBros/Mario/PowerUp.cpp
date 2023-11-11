@@ -11,14 +11,16 @@ enum PowerUpAnims
 	HITTED, NONE
 };
 
-void PowerUp::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
+void PowerUp::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, string t)
 {
 	hit = false;
 	activado = true;
+	fueraBloque = false;
+	movePowerUp = false;
+	tipoPowerUp = t;
 	tileMapDispl = tileMapPos;
 
 	//mushroom
-
 	spritemushroom.loadFromFile("images/mushroom.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	mushroom = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.5, 1), &spritemushroom, &shaderProgram);
 	mushroom->setNumberAnimations(2);
@@ -30,51 +32,80 @@ void PowerUp::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	mushroom->addKeyframe(NONE, glm::vec2(0.5, 0.f));
 
 	//star
-
 	spritestar.loadFromFile("images/star.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	star = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.5, 1), &spritemushroom, &shaderProgram);
-	star ->setNumberAnimations(2);
+	star = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.2, 1), &spritestar, &shaderProgram);
+	star->setNumberAnimations(2);
 
-	star ->setAnimationSpeed(HITTED, 8);
-	star ->addKeyframe(HITTED, glm::vec2(0, 0.f));
+	star->setAnimationSpeed(HITTED, 8);
+	star->addKeyframe(HITTED, glm::vec2(0.2 * 0, 0.f));
+	star->addKeyframe(HITTED, glm::vec2(0.2 * 1, 0.f));
+	star->addKeyframe(HITTED, glm::vec2(0.2 * 2, 0.f));
+	star->addKeyframe(HITTED, glm::vec2(0.2 * 3, 0.f));
 
-	star ->setAnimationSpeed(NONE, 8);
-	star->addKeyframe(NONE, glm::vec2(0.5, 0.f));
+	star->setAnimationSpeed(NONE, 8);
+	star->addKeyframe(NONE, glm::vec2(0.2 * 4, 0.f));
 
 	mushroom->changeAnimation(NONE);
-	star->changeAnimation(HITTED);
+	star->changeAnimation(NONE);
 	mushroom->setPosition(glm::vec2(float(tileMapDispl.x + posPowerUp.x), float(posPowerUp.y + posPowerUp.y)));
 	star->setPosition(glm::vec2(float(tileMapDispl.x + posPowerUp.x), float(posPowerUp.y + posPowerUp.y)));
-	sprite = mushroom;
+	if (tipoPowerUp == "SETA") sprite = mushroom;
+	else sprite = star;
 }
 
 void PowerUp::update(int deltaTime)
 {
 	sprite->update(deltaTime);
 
-	if (sprite->animation() == NONE && hit)
-	{
-		sprite->changeAnimation(HITTED);
-		//posPowerUp.y -= 32;
-		sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPowerUp.x), float(tileMapDispl.y + posPowerUp.y)));
+	if (!fueraBloque) {
+		if (sprite->animation() == NONE && hit)
+		{
+			sprite->changeAnimation(HITTED);
+		}
+		else if (sprite->animation() == HITTED && hit)
+		{
+			if (time >= 30) {
+				hit = false;
+				fueraBloque = true;
+			}
+			else {
+				++time;
+				posPowerUp.y -= 1;
+			}
+			
+			
+		}
 	}
-	else if (sprite->animation() == HITTED && hit)
-	{
-		if (time >= 32) hit = false;
-		else ++time;
+	else {
+		bool colision = map->collisionMoveDown(posPowerUp, glm::vec2(32,32), &posPowerUp.y);
+		if (!hit) posPowerUp.y += 4;
+		else if (!colision) posPowerUp.y += 1;
 
-		posPowerUp.y -= 1;
-		sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPowerUp.x), float(tileMapDispl.y + posPowerUp.y)));
+		if (movePowerUp)
+		{
+			posPowerUp.x -= 2;
+			if (map->collisionMoveLeft(posPowerUp, glm::vec2(32, 32)))
+			{
+				movePowerUp = false;
+			}
+		}
+		else
+		{
+			posPowerUp.x += 2;
+			if (map->collisionMoveRight(posPowerUp, glm::vec2(32, 32)))
+			{
+				movePowerUp = true;
+			}
+		}
+		hit = false;
 	}
-	/*else if (sprite->animation() == HITTED && !hit)
-	{
-		sprite->changeAnimation(NONE);
-	}*/
+	
+	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPowerUp.x), float(tileMapDispl.y + posPowerUp.y - 4)));
 }
 
 void PowerUp::render()
 {
-	sprite->render();
+	if (activado) sprite->render();
 }
 
 void PowerUp::setTileMap(TileMap* tileMap)
@@ -97,9 +128,25 @@ bool PowerUp::getActivo() const {
 	return activado;
 }
 
-void PowerUp::setHit()
+bool PowerUp::getFueraBloque() const {
+	return fueraBloque;
+}
+
+void PowerUp::setHit(string d, const glm::vec2& posB)
 {
 	time = 0;
 	hit = true;
+
+	if (d == "DOWN") {
+		int aux = (posPowerUp.y + 32) - posB.y;
+		posPowerUp.y -= aux;
+	}
+}
+
+void PowerUp::setDesactivar() {
 	activado = false;
+}
+
+string PowerUp::getTipo() {
+	return tipoPowerUp;
 }

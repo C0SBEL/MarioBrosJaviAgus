@@ -43,11 +43,11 @@ private:
 	bool bJumping, dying, active, rebooted, falling, superMario, starMario, inmunidad, renderizar, mastil, win;
 	glm::ivec2 tileMapDispl, posPlayer, tamPlayer, posBloque;
 	int jumpAngle, startY, vel, jump_angle_step, jump_height, fall_step;
-	Texture spritesheetMario, spritesheetSuperMario;
-	Sprite *sprite, *mario, *supermario;
+	Texture spritesheetMario, spritesheetSuperMario, spritesheetStarMario, spritesheetStarSuperMario;
+	Sprite *sprite, *mario, *supermario, *starmario, *starsupermario;
 	TileMap *map;
 	string hitBloque;
-	int time, timeinm, aux, timeBandera;
+	int time, timeinm, aux, timeBandera, timeStar;
 
 
 };
