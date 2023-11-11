@@ -83,10 +83,10 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	mario->addKeyframe(TURN_RIGHT, glm::vec2(tamM * 4, 0.f));
 
 	mario->setAnimationSpeed(POLE_LEFT, 8);
-	mario->addKeyframe(POLE_LEFT, glm::vec2(tamM*7, 0.f));
+	mario->addKeyframe(POLE_LEFT, glm::vec2(tamM*7, 0.5f));
 
 	mario->setAnimationSpeed(POLE_RIGHT, 8);
-	mario->addKeyframe(POLE_RIGHT, glm::vec2(tamM * 7, 0.5f));
+	mario->addKeyframe(POLE_RIGHT, glm::vec2(tamM * 7, 0.f));
 
 	mario->setAnimationSpeed(NONE, 8);
 	mario->addKeyframe(NONE, glm::vec2(tamM * 8, 0.5f));
@@ -135,53 +135,17 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	supermario->setAnimationSpeed(TURN_RIGHT, 8);
 	supermario->addKeyframe(TURN_RIGHT, glm::vec2(tamSM * 4, 0.f));
 
-	supermario->setAnimationSpeed(POLE_LEFT, 8);
-	supermario->addKeyframe(POLE_LEFT, glm::vec2(tamM * 7, 0.5f));
-
 	supermario->setAnimationSpeed(POLE_RIGHT, 8);
-	supermario->addKeyframe(POLE_RIGHT, glm::vec2(tamM * 7, 0.f));
+	supermario->addKeyframe(POLE_RIGHT, glm::vec2(tamSM * 7, 0.f));
+
+	supermario->setAnimationSpeed(POLE_LEFT, 8);
+	supermario->addKeyframe(POLE_LEFT, glm::vec2(tamSM * 7, 0.5f));
 
 	supermario->setAnimationSpeed(NONE, 8);
 	supermario->addKeyframe(NONE, glm::vec2(tamSM*8, 0.f));
 
-	//Animación cambio estado
-	double tamAnim = 0.125;
-	spritesheetCambioEstado.loadFromFile("images/Animacion1.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	cambioestado = Sprite::createSprite(glm::ivec2(32, 64), glm::vec2(tamAnim, 0.5), &spritesheetCambioEstado, &shaderProgram);
-	cambioestado->setNumberAnimations(2);
-
-	cambioestado->setAnimationSpeed(MARIO_SUPERMARIO_LEFT, 8);
-	cambioestado->addKeyframe(MARIO_SUPERMARIO_LEFT, glm::vec2(tamAnim * 0, 0.5f));
-	cambioestado->addKeyframe(MARIO_SUPERMARIO_LEFT, glm::vec2(tamAnim * 1, 0.5f));
-	cambioestado->addKeyframe(MARIO_SUPERMARIO_LEFT, glm::vec2(tamAnim * 2, 0.5f));
-
-	cambioestado->setAnimationSpeed(MARIO_SUPERMARIO_RIGHT, 8);
-	cambioestado->addKeyframe(MARIO_SUPERMARIO_RIGHT, glm::vec2(tamAnim * 0, 0.f));
-	cambioestado->addKeyframe(MARIO_SUPERMARIO_RIGHT, glm::vec2(tamAnim * 1, 0.f));
-	cambioestado->addKeyframe(MARIO_SUPERMARIO_RIGHT, glm::vec2(tamAnim * 2, 0.f));
-
-	cambioestado->setAnimationSpeed(SUPERMARIO_MARIO_LEFT, 8);
-	cambioestado->addKeyframe(SUPERMARIO_MARIO_LEFT, glm::vec2(tamAnim * 3, 0.5f));
-	cambioestado->addKeyframe(SUPERMARIO_MARIO_LEFT, glm::vec2(tamAnim * 4, 0.5f));
-	cambioestado->addKeyframe(SUPERMARIO_MARIO_LEFT, glm::vec2(tamAnim * 5, 0.5f));
-	cambioestado->addKeyframe(SUPERMARIO_MARIO_LEFT, glm::vec2(tamAnim * 6, 0.5f));
-
-	cambioestado->setAnimationSpeed(SUPERMARIO_MARIO_RIGHT, 8);
-	cambioestado->addKeyframe(SUPERMARIO_MARIO_RIGHT, glm::vec2(tamAnim * 3, 0.f));
-	cambioestado->addKeyframe(SUPERMARIO_MARIO_RIGHT, glm::vec2(tamAnim * 4, 0.f));
-	cambioestado->addKeyframe(SUPERMARIO_MARIO_RIGHT, glm::vec2(tamAnim * 5, 0.f));
-	cambioestado->addKeyframe(SUPERMARIO_MARIO_RIGHT, glm::vec2(tamAnim * 6, 0.f));
-
-	cambioestado->setAnimationSpeed(NONE, 8);
-	cambioestado->addKeyframe(NONE, glm::vec2(tamAnim * 7, 0.f));
-
-	mario->changeAnimation(0);
+	mario->changeAnimation(STAND_RIGHT);
 	supermario->changeAnimation(NONE);
-	cambioestado->changeAnimation(NONE);
-	tileMapDispl = tileMapPos;
-	mario->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
-	supermario->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
-	
 	sprite = mario;
 	tamPlayer = glm::ivec2(32, 32); //Tamaño Mario
 
@@ -192,12 +156,22 @@ void Player::update(int deltaTime, float poscam)
 	if (active) {
 		if (mastil)
 		{
-			//sprite->changeAnimation(POLE_RIGHT);
-			if (!map->collisionMoveDown(posPlayer, tamPlayer, &posPlayer.y)) posPlayer.y += 2;
+			if (posPlayer.y + tamPlayer.y < 384) posPlayer.y += 2;
 			else {
 				win = true;
 				mastil = false;
 			}
+			/*else if (sprite->animation() == POLE_RIGHT) {
+				timeBandera = 0;
+				sprite->changeAnimation(POLE_LEFT);
+			}
+			else {
+				if (timeBandera >= 20) sprite->changeAnimation(MOVE_RIGHT);
+				else {
+					++timeBandera;
+				}
+				
+			}*/
 			sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x + 16), float(tileMapDispl.y + posPlayer.y)));
 		}
 		else {
@@ -232,9 +206,6 @@ void Player::update(int deltaTime, float poscam)
 			//else if ((!Game::instance().getSpecialKey(GLUT_KEY_LEFT) || !Game::instance().getSpecialKey(GLUT_KEY_RIGHT) && !Game::instance().getSpecialKey(GLUT_KEY_DOWN))) vel = 2;
 			else vel = 2;
 
-			if (map->collisionMastil(posPlayer, tamPlayer)) {
-				mastil = true;
-			}
 
 			if (!dying) {
 				//Caer
@@ -242,7 +213,7 @@ void Player::update(int deltaTime, float poscam)
 					posPlayer.y = 14 * tamPlayer.x;
 					dying = true;
 					falling = true;
-					sprite->changeAnimation(DEAD);
+					if (sprite == mario) sprite->changeAnimation(DEAD);
 				}
 
 				if (Game::instance().getSpecialKey(GLUT_KEY_LEFT))
@@ -305,7 +276,7 @@ void Player::update(int deltaTime, float poscam)
 					if (sprite->animation() == STAND_RIGHT) sprite->changeAnimation(JUMP_RIGHT);
 				}
 				else {
-					sprite->changeAnimation(DEAD);
+					if (sprite == mario) sprite->changeAnimation(DEAD);
 				}
 
 				jumpAngle += jump_angle_step;
@@ -357,6 +328,12 @@ void Player::update(int deltaTime, float poscam)
 				}
 
 			}
+
+			if (map->collisionMastil(posPlayer, tamPlayer)) {
+     			mastil = true;
+				sprite->changeAnimation(POLE_RIGHT);
+			}
+
 			sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 		}
 	}
