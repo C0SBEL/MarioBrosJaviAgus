@@ -1,1 +1,5 @@
-﻿
+﻿  Scene.cpp
+C:\Users\vegac\Desktop\VJ\MarioBrosJaviAgus\SuperMarioBros\Mario\Scene.cpp(110,62): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\vegac\Desktop\VJ\MarioBrosJaviAgus\SuperMarioBros\Mario\Scene.cpp(111,64): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\vegac\Desktop\VJ\MarioBrosJaviAgus\SuperMarioBros\Mario\Scene.cpp(112,48): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
+  Mario.vcxproj -> C:\Users\vegac\Desktop\VJ\MarioBrosJaviAgus\SuperMarioBros\Mario\Debug\Mario.exe

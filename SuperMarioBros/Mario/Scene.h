@@ -62,7 +62,7 @@ private:
 	Text *text; //tocado
 	Banner* banner;
 	Moneda* moneda;
-	PowerUp* powerup;
+	PowerUp* powerUp;
 	PantallaMundo* pantallaMundo;
 	PantallaTimeUp* pantallaTimeUp;
 	int numKoopa, numGoomba, numBloque, numMoneda, numPowerUp;

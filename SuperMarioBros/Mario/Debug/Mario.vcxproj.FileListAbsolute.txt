@@ -1,3 +1,4 @@
 C:\Users\Bugsys\Desktop\VJ\SuperMarioBros\Mario\Debug\Mario.exe
 C:\Users\Bugsys\Desktop\MarioBros2D\SuperMarioBros\Mario\Debug\Mario.exe
 C:\Users\Bugsys\Desktop\MarioBros2D\SuperMarioBros\SuperMarioBros\Mario\Debug\Mario.exe
+C:\Users\vegac\Desktop\VJ\MarioBrosJaviAgus\SuperMarioBros\Mario\Debug\Mario.exe

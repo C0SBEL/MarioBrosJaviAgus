@@ -33,7 +33,7 @@ void PantallaWin::init() {
 	text[4].init(glm::vec2(float(8 * 16), float(12 * 16)), texProgram, 2, 0, "CONGRATULATIONS!");
 	text[5].init(glm::vec2(float(9 * 16), float(16 * 16)), texProgram, 2, 0, "YOU HAVE WON!");
 
-	text[6].init(glm::vec2(float(4 * 16), float(27 * 16)), texProgram, 2, 1, "PRESS ESC TO GO TO MENU"); //368
+	text[6].init(glm::vec2(float(4 * 16), float(23 * 16)), texProgram, 2, 1, "PRESS ESC TO GO TO MENU"); //368
 
 	//pantallaWin->setPosition(glm::vec2(float(0), float(0)));
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
