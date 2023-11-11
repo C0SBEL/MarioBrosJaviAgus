@@ -40,7 +40,7 @@ public:
 	
 	
 private:
-	bool bJumping, dying, active, rebooted, falling, superMario, starMario, inmunidad, renderizar, mastil, win;
+	bool bJumping, dying, active, rebooted, falling, superMario, starMario, inmunidad, renderizar, mastil, win, finivel;
 	glm::ivec2 tileMapDispl, posPlayer, tamPlayer, posBloque;
 	int jumpAngle, startY, vel, jump_angle_step, jump_height, fall_step;
 	Texture spritesheetMario, spritesheetSuperMario;

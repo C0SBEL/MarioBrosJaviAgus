@@ -32,7 +32,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	fall_step = 4;
 	bJumping = false;
 	dying = false;
-	vel = 5;
+	vel = 2;
 	time = 0;
 	active = true;
 	rebooted = false;
@@ -41,6 +41,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	mastil = false;
 	win = false;
 	aux = 0;
+	finivel = false;
 
 	//MARIO
 	double tamM = 0.1;
@@ -129,14 +130,13 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	supermario->setAnimationSpeed(BEND_RIGHT, 8);
 	supermario->addKeyframe(BEND_RIGHT, glm::vec2(tamSM*6, 0.f));
 
+	//TURN LEFT AHORA ES POLE RIGHT PARA SUPER MARIO
+
 	supermario->setAnimationSpeed(TURN_LEFT, 8);
-	supermario->addKeyframe(TURN_LEFT, glm::vec2(tamSM * 4, 0.5f));
+	supermario->addKeyframe(TURN_LEFT, glm::vec2(0.7f, 0.f));
 
 	supermario->setAnimationSpeed(TURN_RIGHT, 8);
 	supermario->addKeyframe(TURN_RIGHT, glm::vec2(tamSM * 4, 0.f));
-
-	supermario->setAnimationSpeed(POLE_RIGHT, 8);
-	supermario->addKeyframe(POLE_RIGHT, glm::vec2(tamSM * 7, 0.f));
 
 	supermario->setAnimationSpeed(POLE_LEFT, 8);
 	supermario->addKeyframe(POLE_LEFT, glm::vec2(tamSM * 7, 0.5f));
@@ -149,6 +149,8 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	sprite = mario;
 	tamPlayer = glm::ivec2(32, 32); //Tamaño Mario
 
+
+
 }
 
 void Player::update(int deltaTime, float poscam)
@@ -156,22 +158,22 @@ void Player::update(int deltaTime, float poscam)
 	if (active) {
 		if (mastil)
 		{
-			if (posPlayer.y + tamPlayer.y < 384) posPlayer.y += 2;
-			else {
+			if (posPlayer.y + tamPlayer.y <= 384) {
+				printf("posPlayer.y = %d \n", posPlayer.y);
+				posPlayer.y += 2;
+			}
+			else if (sprite->animation() != MOVE_RIGHT) {
+				sprite->changeAnimation(MOVE_RIGHT);
+			}
+			else if (posPlayer.y + tamPlayer.y >= 384) {
+				if (!map->collisionMoveDown(posPlayer, tamPlayer, &posPlayer.y)) posPlayer.y += 2;
+			    posPlayer.x += 2;
+			}
+			if (posPlayer.x >= 226 * 32){
 				win = true;
-				mastil = false;
+				//mastil = false;
 			}
-			/*else if (sprite->animation() == POLE_RIGHT) {
-				timeBandera = 0;
-				sprite->changeAnimation(POLE_LEFT);
-			}
-			else {
-				if (timeBandera >= 20) sprite->changeAnimation(MOVE_RIGHT);
-				else {
-					++timeBandera;
-				}
-				
-			}*/
+			sprite->update(deltaTime);
 			sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x + 16), float(tileMapDispl.y + posPlayer.y)));
 		}
 		else {
@@ -233,7 +235,7 @@ void Player::update(int deltaTime, float poscam)
 					}
 				}
 				//Tecla derecha
-				else if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT))
+				else if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT) || finivel)
 				{
 					if (bJumping) sprite->changeAnimation(JUMP_RIGHT);
 					else if (sprite->animation() != MOVE_RIGHT)
@@ -331,7 +333,8 @@ void Player::update(int deltaTime, float poscam)
 
 			if (map->collisionMastil(posPlayer, tamPlayer)) {
      			mastil = true;
-				sprite->changeAnimation(POLE_RIGHT);
+				if (sprite == mario) sprite->changeAnimation(POLE_RIGHT);
+				else sprite->changeAnimation(TURN_LEFT);
 			}
 
 			sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));

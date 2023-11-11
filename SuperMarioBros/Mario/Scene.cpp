@@ -306,12 +306,14 @@ void Scene::update(int deltaTime)
 								koopa[i].changeDirection();
 							}
 							else if (koopa[j].ismoveShell() && !koopa[i].isShell()) {
+								puntosMario += 200;
 								koopa[i].transformToShell();
 								koopa[i].morintKoopa();
 								printf("morintkoopa");
 							}
 							else if (koopa[j].ismoveShell() && koopa[i].isShell() && !koopa[i].ismoveShell()) {
 								koopa[i].morintKoopa();
+								puntosMario += 200;
 								printf("morintkoopa");
 							}
 						}
