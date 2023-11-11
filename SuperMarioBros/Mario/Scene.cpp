@@ -3,6 +3,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Scene.h"
 #include "Game.h"
+#include "Audio.h"
 
 
 #define SCREEN_X 0
@@ -71,6 +72,7 @@ void Scene::init()
 	finTiempo = false;
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 	currentTime = 0.0f;
+
 }
 
 void Scene::restart() 
@@ -442,6 +444,7 @@ void Scene::render()
 
 void Scene::changeLevel(string lvl)
 {
+	Audio::instance().stopMusic();
 	//Elimino los elementos anteriores
 	player = NULL;
 	goomba = NULL;
@@ -471,6 +474,7 @@ void Scene::changeLevel(string lvl)
 		if (lvl == "level01") {
 			world = 1;
 			level = 1;
+			Audio::instance().playLevel(1);
 			map = TileMap::createTileMap("levels/level01.txt", "levels/objects01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 		}
 		else if (lvl == "level02") {

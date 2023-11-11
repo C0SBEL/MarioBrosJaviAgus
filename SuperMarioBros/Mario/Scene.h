@@ -15,6 +15,7 @@
 #include "PantallaMundo.h"
 #include "PantallaTimeUp.h"
 #include "PowerUp.h"
+#include "Audio.h"
 
 
 // Scene contains all the entities of our game.
