@@ -55,7 +55,7 @@ private:
 	Texture tilesheet;
 	glm::vec2 tileTexSize;
 	int *map;
-	vector<pair<int, int>> posGoombas, posKoopas, posLadrillos, posInterrogantes, posMonedas, posSetas;;
+	vector<pair<int, int>> posGoombas, posKoopas, posLadrillos, posInterrogantes, posMonedas, posSetas, posEstrellas;
 
 };
 

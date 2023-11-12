@@ -61,6 +61,7 @@ void Scene::init()
 	//Preparo nivel
 	world = 1;
 	level = 1;
+	estadoMario = "MARIO";
 	changeLevel("level01");
 	banner->setLevel(world, level);
 	banner->setPoints(0);
@@ -124,13 +125,12 @@ void Scene::update(int deltaTime)
 
 	//ATAJOS
 	if (player != NULL) {
-		string estado = player->getEstado();
 		if (Game::instance().getKey('m') || Game::instance().getKey('M'))
 		{
-			if (estado == "SUPERMARIO") player->cambiaEstado("SUPERMARIO", "MARIO");
-			else if (estado == "MARIO") player->cambiaEstado("MARIO", "SUPERMARIO");
-			else if (estado == "STARSUPERMARIO") player->cambiaEstado("STARSUPERMARIO", "STARMARIO");
-			else if (estado == "STARMARIO") player->cambiaEstado("STARMARIO", "STARSUPERMARIO");
+			if (estadoMario == "SUPERMARIO") player->cambiaEstado("SUPERMARIO", "MARIO");
+			else if (estadoMario == "MARIO") player->cambiaEstado("MARIO", "SUPERMARIO");
+			else if (estadoMario == "STARSUPERMARIO") player->cambiaEstado("STARSUPERMARIO", "STARMARIO");
+			else if (estadoMario == "STARMARIO") player->cambiaEstado("STARMARIO", "STARSUPERMARIO");
 
 			Game::instance().keyReleased('M');
 			Game::instance().keyReleased('m');
@@ -138,10 +138,10 @@ void Scene::update(int deltaTime)
 
 		if (Game::instance().getKey('g') || Game::instance().getKey('G'))
 		{
-			if (estado == "SUPERMARIO") player->cambiaEstado("SUPERMARIO", "STARSUPERMARIO");
-			else if (estado == "MARIO") player->cambiaEstado("MARIO", "STARMARIO");
-			else if (estado == "STARSUPERMARIO") player->cambiaEstado("STARSUPERMARIO", "SUPERMARIO");
-			else if (estado == "STARMARIO") player->cambiaEstado("STARMARIO", "MARIO");
+			if (estadoMario == "SUPERMARIO") player->cambiaEstado("SUPERMARIO", "STARSUPERMARIO");
+			else if (estadoMario == "MARIO") player->cambiaEstado("MARIO", "STARMARIO");
+			else if (estadoMario == "STARSUPERMARIO") player->cambiaEstado("STARSUPERMARIO", "SUPERMARIO");
+			else if (estadoMario == "STARMARIO") player->cambiaEstado("STARMARIO", "MARIO");
 
 			Game::instance().keyReleased('G');
 			Game::instance().keyReleased('g');
@@ -233,7 +233,7 @@ void Scene::update(int deltaTime)
 					printf("PowerUp");
 					powerUp[i].setHit("MARIO", posMario);
 				}
-				else {
+				else if (fueraBloque){
 					string tipo = powerUp[i].getTipo();
 					string estadoMario = player->getEstado();
 					powerUp[i].setDesactivar();
@@ -436,7 +436,7 @@ void Scene::update(int deltaTime)
 
 		//MIRAR SI GANAMOS
 		if (winning) {
-			//changeLevel("mundo");
+			estadoMario = player->getEstado();
 			if (level == 1) {
 				//player->setWin();
 				level = 2;
@@ -558,6 +558,7 @@ void Scene::changeLevel(string lvl)
 		player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 		player->setTileMap(map);
+		if (lvl == "level02") player->cambiaEstado("MARIO", estadoMario);
 
 		//GOOMBAS
 		vector<pair<int, int>> posGoombas = map->getPosObj("GOOMBAS");
@@ -631,18 +632,30 @@ void Scene::changeLevel(string lvl)
 		}
 		//pos_camara = 0;
 
-		//MUSHROOMS
+		//PWERUPS
 		vector<pair<int, int>> posSetas = map->getPosObj("SETAS");
-		numPowerUp = posSetas.size();
+		vector<pair<int, int>> posEstrellas = map->getPosObj("ESTRELLAS");
+		int numS = posSetas.size();
+		int numE = posEstrellas.size();
+		numPowerUp = numS + numE;
 		//printf(" Numero koopas: %d", numMoneda);
 		if (numPowerUp > 0)
 		{
 			powerUp = new PowerUp[numPowerUp];
-			for (int i = 0; i < numPowerUp; ++i)
+			int i = 0;
+			for (int j = 0; j < numS; ++j)
 			{
 				powerUp[i].init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, "SETA");
-				powerUp[i].setPosition(glm::vec2((posSetas[i].first /* + 0.25f */ )* map->getTileSize(), posSetas[i].second* map->getTileSize()));
+				powerUp[i].setPosition(glm::vec2((posSetas[j].first)* map->getTileSize(), posSetas[j].second* map->getTileSize()));
 				powerUp[i].setTileMap(map);
+				++i;
+			}
+			for (int j = 0; j < numE; ++j)
+			{
+				powerUp[i].init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, "STAR");
+				powerUp[i].setPosition(glm::vec2((posEstrellas[j].first) * map->getTileSize(), posEstrellas[j].second * map->getTileSize()));
+				powerUp[i].setTileMap(map);
+				++i;
 			}
 		}
 

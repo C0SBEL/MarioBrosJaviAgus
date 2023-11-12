@@ -249,6 +249,30 @@ bool TileMap::cargarElementos(const string& objectFile) {
 		posSetas[i] = aux;
 	}
 
+	sstream.clear();
+	sstream.seekg(0);
+
+	//Posiciones Monedas
+	getline(fin, line);
+	if (line.compare(0, 8, "ESTRELLA") != 0)
+		return false;
+	getline(fin, line);
+	sstream.str(line);
+	int numE;
+	sstream >> numE;
+	posEstrellas = vector<pair<int, int>>(numE);
+
+	sstream.clear();
+	sstream.seekg(0);
+
+	getline(fin, line);
+	sstream.str(line);
+	for (int i = 0; i < numE; ++i) {
+		pair<int, int> aux;
+		sstream >> aux.first >> aux.second;
+		posEstrellas[i] = aux;
+	}
+
 	fin.close();
 
 	return true;
@@ -262,6 +286,7 @@ vector<pair<int, int>> TileMap::getPosObj(string n)
 	else if (n == "LADRILLOS") return posLadrillos;
 	else if (n == "MONEDAS") return posMonedas;
 	else if (n == "SETAS") return posSetas;
+	else if (n == "ESTRELLAS") return posEstrellas;
 }
 
 void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
