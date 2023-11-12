@@ -277,13 +277,14 @@ void Scene::update(int deltaTime)
 				glm::vec2 tamG = goomba[i].getTam();
 				if (!player->isDying() && collisionPlayerEnemy(posMario, tamM, posGoomba, tamG)) {
 					//Mario mata goomba
-					if (posMario.y < posGoomba.y) {
+					if (posMario.y + (tamM.y / 2) + 1 < posGoomba.y) {
 						goomba[i].morint();
 						player->jump();
 						puntosMario += 100;
 						printf("GOOMBA 100");
 					}
 					else if (estadoMario == "STARMARIO") player->cambiaEstado(estadoMario, "MARIO");
+					else if (estadoMario == "SUPERMARIO") player->cambiaEstado(estadoMario, "MARIO");
 					else if (estadoMario == "MARIO" && !inmunidadMario) {
 						player->morirsalto();
 						numVidasMario -= 1;
@@ -345,7 +346,6 @@ void Scene::update(int deltaTime)
 						}
 					}
 					else if (estadoMario == "SUPERMARIO") {
-						printf("cambia estado");
 						player->cambiaEstado(estadoMario, "MARIO");
 					}
 					else if (estadoMario == "MARIO" && !inmunidadMario) {
